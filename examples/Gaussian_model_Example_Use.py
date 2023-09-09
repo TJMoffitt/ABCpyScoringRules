@@ -4,7 +4,8 @@ from abcpy.backends import BackendDummy
 from abcpy.continuousmodels import Normal, LogNormal
 from abcpy.inferences import adSGLD, SGLD
 from abcpy.statistics import Identity
-from Gaussian_model import Gaussian
+#from Gaussian_model import Gaussian
+from twodimgaussian import Gaussian
 
 # setup backend
 dummy = BackendDummy()
@@ -19,10 +20,11 @@ stat_calc = Identity(degree=2, cross=False)
 dist_calc = EnergyScore(stat_calc, model, 1)
 
 y_obs = model.forward_simulate([6,1], 100, rng=np.random.RandomState(8))  # Correct
+print(y_obs)
 
-sampler = adSGLD([model], [dist_calc], dummy, seed=1)
+sampler = SGLD([model], [dist_calc], dummy, seed=1)
 
-journal = sampler.sample([y_obs], 100, 100, 2000, step_size=0.0001, w_val = 300, diffusion_factor=0.01, path_to_save_journal="tmp.jnl")
+journal = sampler.sample([y_obs], 100, 100, 100, step_size=0.0001, w_val = 15, diffusion_factor=0.01, path_to_save_journal="tmp.jnl")
 
 journal.plot_posterior_distr(path_to_save="posterior.png")
 journal.traceplot()

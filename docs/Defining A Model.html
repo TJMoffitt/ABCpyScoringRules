@@ -139,11 +139,11 @@
 </pre></div>
 </div>
 <span class="target" id="module-ModelFile"></span><dl class="py class">
-<dt class="sig sig-object py" id="ModelFile.UserDefinedModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ModelFile.</span></span><span class="sig-name descname"><span class="pre">UserDefinedModel</span></span><a class="headerlink" href="#ModelFile.UserDefinedModel" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ModelFile.ModelName">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ModelFile.</span></span><span class="sig-name descname"><span class="pre">ModelName</span></span><a class="headerlink" href="#ModelFile.ModelName" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="py function">
-<dt class="sig sig-object py" id="ModelFile.UserDefinedModel.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ModelFile.UserDefinedModel.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ModelFile.ModelName.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ModelFile.ModelName.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>When initialising the user-defined model, this function ensures that the model works in the <cite>abcpy</cite> structure by adding the input parameters (either prior pdfs or hyperparameters) into a graph. This graph is then used throughout the graph tools class and elsewhere in the existing <cite>abcpy</cite> structure.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -167,8 +167,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ModelFile.UserDefinedModel._check_input">
-<span class="sig-name descname"><span class="pre">_check_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ModelFile.UserDefinedModel._check_input" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ModelFile.ModelName._check_input">
+<span class="sig-name descname"><span class="pre">_check_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ModelFile.ModelName._check_input" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the set of possible parameter values for the model are correct.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -181,8 +181,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ModelFile.UserDefinedModel.forward_simulate">
-<span class="sig-name descname"><span class="pre">forward_simulate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ModelFile.UserDefinedModel.forward_simulate" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ModelFile.ModelName.forward_simulate">
+<span class="sig-name descname"><span class="pre">forward_simulate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ModelFile.ModelName.forward_simulate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Forward simulate the model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -198,8 +198,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ModelFile.UserDefinedModel.grad_forward_simulate">
-<span class="sig-name descname"><span class="pre">grad_forward_simulate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ModelFile.UserDefinedModel.grad_forward_simulate" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ModelFile.ModelName.grad_forward_simulate">
+<span class="sig-name descname"><span class="pre">grad_forward_simulate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ModelFile.ModelName.grad_forward_simulate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the gradient of the forward simulation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -215,8 +215,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ModelFile.UserDefinedModel._check_output">
-<span class="sig-name descname"><span class="pre">_check_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ModelFile.UserDefinedModel._check_output" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ModelFile.ModelName._check_output">
+<span class="sig-name descname"><span class="pre">_check_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ModelFile.ModelName._check_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the output values are in the correct form.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -229,8 +229,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ModelFile.UserDefinedModel.get_output_dimension">
-<span class="sig-name descname"><span class="pre">get_output_dimension</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#ModelFile.UserDefinedModel.get_output_dimension" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ModelFile.ModelName.get_output_dimension">
+<span class="sig-name descname"><span class="pre">get_output_dimension</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#ModelFile.ModelName.get_output_dimension" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Returns the output dimension of the simulator model.</p>
@@ -239,8 +239,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ModelFile.UserDefinedModel.transform_list">
-<span class="sig-name descname"><span class="pre">transform_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ModelFile.UserDefinedModel.transform_list" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ModelFile.ModelName.transform_list">
+<span class="sig-name descname"><span class="pre">transform_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ModelFile.ModelName.transform_list" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Returns a list of transformation functions for the model parameters.</p>
@@ -249,8 +249,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ModelFile.UserDefinedModel.inverse_transform_list">
-<span class="sig-name descname"><span class="pre">inverse_transform_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ModelFile.UserDefinedModel.inverse_transform_list" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ModelFile.ModelName.inverse_transform_list">
+<span class="sig-name descname"><span class="pre">inverse_transform_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ModelFile.ModelName.inverse_transform_list" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Returns the inverse of the transformations from <cite>transform_list</cite>.</p>
@@ -259,8 +259,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ModelFile.UserDefinedModel.Jacobian_list">
-<span class="sig-name descname"><span class="pre">Jacobian_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ModelFile.UserDefinedModel.Jacobian_list" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ModelFile.ModelName.Jacobian_list">
+<span class="sig-name descname"><span class="pre">Jacobian_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ModelFile.ModelName.Jacobian_list" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Returns the gradient of the transformations from <cite>transform_list</cite>.</p>
@@ -334,16 +334,16 @@
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Defining A Model</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#user-defined-model">User defined Model</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#ModelFile.UserDefinedModel"><code class="docutils literal notranslate"><span class="pre">UserDefinedModel</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#ModelFile.UserDefinedModel.__init__"><code class="docutils literal notranslate"><span class="pre">UserDefinedModel.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ModelFile.UserDefinedModel._check_input"><code class="docutils literal notranslate"><span class="pre">UserDefinedModel._check_input()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ModelFile.UserDefinedModel.forward_simulate"><code class="docutils literal notranslate"><span class="pre">UserDefinedModel.forward_simulate()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ModelFile.UserDefinedModel.grad_forward_simulate"><code class="docutils literal notranslate"><span class="pre">UserDefinedModel.grad_forward_simulate()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ModelFile.UserDefinedModel._check_output"><code class="docutils literal notranslate"><span class="pre">UserDefinedModel._check_output()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ModelFile.UserDefinedModel.get_output_dimension"><code class="docutils literal notranslate"><span class="pre">UserDefinedModel.get_output_dimension()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ModelFile.UserDefinedModel.transform_list"><code class="docutils literal notranslate"><span class="pre">UserDefinedModel.transform_list()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ModelFile.UserDefinedModel.inverse_transform_list"><code class="docutils literal notranslate"><span class="pre">UserDefinedModel.inverse_transform_list()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ModelFile.UserDefinedModel.Jacobian_list"><code class="docutils literal notranslate"><span class="pre">UserDefinedModel.Jacobian_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ModelFile.ModelName"><code class="docutils literal notranslate"><span class="pre">ModelName</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ModelFile.ModelName.__init__"><code class="docutils literal notranslate"><span class="pre">ModelName.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ModelFile.ModelName._check_input"><code class="docutils literal notranslate"><span class="pre">ModelName._check_input()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ModelFile.ModelName.forward_simulate"><code class="docutils literal notranslate"><span class="pre">ModelName.forward_simulate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ModelFile.ModelName.grad_forward_simulate"><code class="docutils literal notranslate"><span class="pre">ModelName.grad_forward_simulate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ModelFile.ModelName._check_output"><code class="docutils literal notranslate"><span class="pre">ModelName._check_output()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ModelFile.ModelName.get_output_dimension"><code class="docutils literal notranslate"><span class="pre">ModelName.get_output_dimension()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ModelFile.ModelName.transform_list"><code class="docutils literal notranslate"><span class="pre">ModelName.transform_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ModelFile.ModelName.inverse_transform_list"><code class="docutils literal notranslate"><span class="pre">ModelName.inverse_transform_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ModelFile.ModelName.Jacobian_list"><code class="docutils literal notranslate"><span class="pre">ModelName.Jacobian_list()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -351,6 +351,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="features.html">Added functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 </ul>
 
 <div class="relations">

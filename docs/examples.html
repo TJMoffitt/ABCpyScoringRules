@@ -33,7 +33,7 @@
             
   <section id="examples">
 <h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h1>
-<p>Example inferences for user-defined Gaussian / G-and-K models</p>
+<p>Example inference for user-defined Gaussian / G-and-K models / Multidimensional simulator</p>
 <hr class="docutils" />
 <p>Gaussian model</p>
 <p>Say we have a set of observations which we know are generated from a gaussian distribution. We can use the following setup
@@ -335,6 +335,163 @@ The code is provided here:</p>
 <p>and we get the following output for our plot, correctly estimating the posterior values 5 and 1 (increasing the
 number of posterior samples will increase the accuracy of this posterior distribution even further)</p>
 <a class="reference internal image-reference" href="_images/gandkmodelposterior.png"><img alt="Alternative text" src="_images/gandkmodelposterior.png" style="width: 400px;" /></a>
+<p>Multidimensional sampler</p>
+<p>The Scoring rule setup allows for user defined models which produce multiple elements per sample, we give an example
+below of a function which produces pairs of values from a gaussian distribution with the same parameters. This setup
+can be used to create models for the analysis of model which produce timeseries (for example in a
+lorenz 95 model) or which have correlated variables.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">from</span> <span class="nn">abcpy.probabilisticmodels</span> <span class="kn">import</span> <span class="n">ProbabilisticModel</span><span class="p">,</span> <span class="n">Continuous</span><span class="p">,</span> <span class="n">InputConnector</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch.autograd.functional</span> <span class="kn">import</span> <span class="n">jacobian</span>
+
+<span class="k">class</span> <span class="nc">DualGaussian</span><span class="p">(</span><span class="n">ProbabilisticModel</span><span class="p">,</span> <span class="n">Continuous</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Gaussian&#39;</span><span class="p">):</span>
+        <span class="c1"># We expect input of type parameters = [mu, sigma]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input of Normal model is of type list&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Input list must be of length 2, containing [mu, sigma].&#39;</span><span class="p">)</span>
+
+        <span class="n">input_connector</span> <span class="o">=</span> <span class="n">InputConnector</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">input_connector</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ordered_transforms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ordered_inverse_transforms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">log</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_check_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_values</span><span class="p">):</span>
+        <span class="c1"># Check whether input has correct type or format</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_values</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Number of parameters of Normal model must be 2.&#39;</span><span class="p">)</span>
+        <span class="c1"># Check whether input is from correct domain</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">input_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">input_values</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">sigma</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">forward_simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_values</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">()):</span>
+        <span class="c1"># Extract the input parameters</span>
+        <span class="c1"># input_values = self.transform_variables(input_values) # do this outside in inference.</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">input_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">input_values</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1">#np.array(rng.normal(mu, sigma, k))</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normal_model_pytorch</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">input_value</span><span class="p">)</span> <span class="k">for</span> <span class="n">input_value</span> <span class="ow">in</span> <span class="n">input_values</span><span class="p">],</span> <span class="n">k</span><span class="p">)</span><span class="c1">#[np.array([x]) for x in vector_of_k_samples]</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">normal_model_pytorch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_values</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">return_grad</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
+            <span class="c1"># value = []</span>
+            <span class="n">mu</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">input_values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">input_values</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu</span><span class="p">,</span><span class="n">sigma</span><span class="p">]</span>
+            <span class="n">yval1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">sigma</span> <span class="o">+</span> <span class="n">mu</span>
+            <span class="n">yval2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">sigma</span> <span class="o">+</span> <span class="n">mu</span>
+            <span class="c1">#value.append([yval1.item(),yval2.item()])</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">yval1</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span><span class="n">yval2</span><span class="o">.</span><span class="n">item</span><span class="p">()])</span>
+            <span class="c1">#values.append(np.array(value))</span>
+            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">values</span>
+
+
+    <span class="k">def</span> <span class="nf">grad_forward_simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_values</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">()):</span>
+        <span class="c1"># Takes input in the form:  [a,....,z]</span>
+        <span class="c1">#print(input_values)</span>
+        <span class="c1"># Outputs: array: [x1, x2, ...... ,xn, [dx1/dtheta1, dx1/dtheta2], ...... [dxn/dtheta1, dxn/dtheta2],]</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grad_normal_model_pytorch</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">input_value</span><span class="p">)</span> <span class="k">for</span> <span class="n">input_value</span> <span class="ow">in</span> <span class="n">input_values</span><span class="p">],</span> <span class="n">k</span><span class="p">)</span><span class="c1">#[np.array([x]) for x in vector_of_k_samples]</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">grad_normal_model_pytorch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_values</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">return_grad</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">gradvalues</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">mu1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">input_values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">sigma1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">input_values</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">z1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">variables1</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu1</span><span class="p">,</span><span class="n">sigma1</span><span class="p">]</span>
+            <span class="n">yval1</span> <span class="o">=</span> <span class="n">z1</span><span class="o">*</span><span class="n">sigma1</span> <span class="o">+</span> <span class="n">mu1</span>
+            <span class="n">yval1</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+
+            <span class="n">mu2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">input_values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">sigma2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">input_values</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">z2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">variables2</span> <span class="o">=</span> <span class="p">[</span><span class="n">mu2</span><span class="p">,</span><span class="n">sigma2</span><span class="p">]</span>
+            <span class="n">yval2</span> <span class="o">=</span> <span class="n">z2</span><span class="o">*</span><span class="n">sigma2</span> <span class="o">+</span> <span class="n">mu2</span>
+            <span class="n">yval2</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+
+            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">yval1</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span><span class="n">yval2</span><span class="o">.</span><span class="n">item</span><span class="p">()])</span>
+
+            <span class="n">gradvalue1</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">variables1</span><span class="p">:</span>
+                <span class="n">gradvalue1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+
+            <span class="n">gradvalue2</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">variables2</span><span class="p">:</span>
+                <span class="n">gradvalue2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+
+            <span class="n">gradvalues</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">gradvalue1</span><span class="p">,</span> <span class="n">gradvalue2</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">values</span> <span class="o">+</span> <span class="n">gradvalues</span>
+
+    <span class="k">def</span> <span class="nf">_check_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">Number</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Output of the normal distribution is always a number.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># At this point values is a number (int, float); full domain for Normal is allowed</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">get_output_dimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">jacobian_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ordered_transforms</span>
+
+    <span class="k">def</span> <span class="nf">transform_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ordered_transforms</span>
+
+    <span class="k">def</span> <span class="nf">inverse_transform_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ordered_inverse_transforms</span>
+</pre></div>
+</div>
+<p>and called as before with</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">abcpy.approx_lhd</span> <span class="kn">import</span> <span class="n">SynLikelihood</span><span class="p">,</span> <span class="n">EnergyScore</span><span class="p">,</span> <span class="n">KernelScore</span>
+<span class="kn">from</span> <span class="nn">abcpy.backends</span> <span class="kn">import</span> <span class="n">BackendDummy</span>
+<span class="kn">from</span> <span class="nn">abcpy.continuousmodels</span> <span class="kn">import</span> <span class="n">Normal</span><span class="p">,</span> <span class="n">LogNormal</span>
+<span class="kn">from</span> <span class="nn">abcpy.inferences</span> <span class="kn">import</span> <span class="n">adSGLD</span><span class="p">,</span> <span class="n">SGLD</span>
+<span class="kn">from</span> <span class="nn">abcpy.statistics</span> <span class="kn">import</span> <span class="n">Identity</span>
+<span class="kn">from</span> <span class="nn">DualGaussianFile</span> <span class="kn">import</span> <span class="n">DualGaussian</span>
+
+<span class="c1"># setup backend</span>
+<span class="n">dummy</span> <span class="o">=</span> <span class="n">BackendDummy</span><span class="p">()</span>
+
+<span class="c1"># define a uniform prior distribution</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">Normal</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;mu&#39;</span><span class="p">)</span>
+<span class="n">sigma</span> <span class="o">=</span> <span class="n">LogNormal</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;sigma&#39;</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">([</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">])</span>
+
+<span class="n">stat_calc</span> <span class="o">=</span> <span class="n">Identity</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cross</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">dist_calc</span> <span class="o">=</span> <span class="n">EnergyScore</span><span class="p">(</span><span class="n">stat_calc</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">y_obs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forward_simulate</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="mi">100</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>  <span class="c1"># Correct</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y_obs</span><span class="p">)</span>
+
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">SGLD</span><span class="p">([</span><span class="n">model</span><span class="p">],</span> <span class="p">[</span><span class="n">dist_calc</span><span class="p">],</span> <span class="n">dummy</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">journal</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">sample</span><span class="p">([</span><span class="n">y_obs</span><span class="p">],</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">step_size</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">w_val</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="n">diffusion_factor</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">path_to_save_journal</span><span class="o">=</span><span class="s2">&quot;tmp.jnl&quot;</span><span class="p">)</span>
+
+<span class="n">journal</span><span class="o">.</span><span class="n">plot_posterior_distr</span><span class="p">(</span><span class="n">path_to_save</span><span class="o">=</span><span class="s2">&quot;posterior.png&quot;</span><span class="p">)</span>
+<span class="n">journal</span><span class="o">.</span><span class="n">traceplot</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>producing the following plot:</p>
+<a class="reference internal image-reference" href="_images/DualGaussian.png"><img alt="Alternative text" src="_images/DualGaussian.png" style="width: 400px;" /></a>
 </section>
 
 

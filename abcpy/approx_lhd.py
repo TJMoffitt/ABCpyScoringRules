@@ -564,63 +564,95 @@ class EnergyScore():
         self.mean = mean
         #super(SynLikelihood, self).__init__(statistics_calc)
 
+    # def loglikelihood(self, y_obs, y_sim):
+    #     # Computes the energy score of the samples
+    #     # y_obs = python list
+    #     # y_sim = python list of np arrays
+
+    #     if y_sim[0].shape != y_sim[-1].shape:
+    #         return "Use gradloglikelihood"
+
+    #     n_obs = len(y_obs)
+    #     n_sim = len(y_sim)
+
+        
+    #     y_obs_np = np.stack(y_obs)
+    #     y_sim_np = np.stack(y_sim)
+        
+
+    #     """observations is an array of size (n_obs, p) (p being the dimensionality), while simulations is an array
+    #     of size (n_sim, p). This works on numpy in the framework of the genBayes with SR paper.
+    #     We estimate this by building an empirical unbiased estimate of Eq. (2) in Ziel and Berk 2019"""
+
+
+    #     p = y_sim_np.shape[-1]
+    #     diff_X_y = y_obs_np.reshape(n_obs, 1, -1) - y_sim_np.reshape(1, n_sim, p)
+    #     diff_X_y = np.einsum('ijk, ijk -> ij', diff_X_y, diff_X_y)
+    #     diff_X_tildeX = y_sim_np.reshape(1, n_sim, p) - y_sim_np.reshape(n_sim, 1, p)
+    #     diff_X_tildeX = np.einsum('ijk, ijk -> ij', diff_X_tildeX, diff_X_tildeX)
+    #     if self.beta != 2:
+    #         diff_X_y **= (self.beta / 2.0)
+    #         diff_X_tildeX **= (self.beta / 2.0)
+
+    #     result = 2 * np.sum(np.mean(diff_X_y, axis=1)) - n_obs * np.sum(diff_X_tildeX) / (n_sim * (n_sim - 1))
+
+    #     if self.mean:
+    #         result /= y_obs_np.shape[0]
+
+    #     return result  # I think this should be negative here
+
+    # def loglikelihood_new(self, y_obs, y_sim):
+    #     if type(y_obs[0]) == type(1.0):
+    #         y_obs = [np.array(obs) for obs in y_obs]
+    #     n_sim = len(y_sim)        # check this added [0] under assumption that it was getting the outer layer
+    #     n_obs = len(y_obs)
+    #     #sim_dim = y_sim[0].shape[0]
+    #     #print(sim_dim)
+    #     y_sim_tensor = torch.tensor(np.stack(y_sim, axis=0), requires_grad=False)
+    #     y_obs_tensor = torch.tensor(np.stack(y_obs, axis=0) , requires_grad=False)
+    #     score_first_half = 0.0
+    #     for y in y_obs_tensor:
+    #         y_sim = torch.reshape(y_sim_tensor,[n_sim,1]).clone().detach()  ####### ENSURE THAT GRADIENT IS RESET OVER LOOPS! #######
+    #         y = torch.reshape(y, [1]) # This should be the dimension not 1
+    #         outputval = self.BetaNorm_new(y_sim, y)
+    #         score_first_half += np.sum(outputval.numpy())
+    #     score_first_half *= 2/n_sim   
+        
+    #     score_second_half = 0.0    # (1, theta_dim)
+    #     for x2_index, x2 in enumerate(y_sim_tensor):
+    #         x1 = torch.reshape(y_sim_tensor,[n_sim,1]).clone().detach()             
+    #         x2 = torch.reshape(x2, [1]).clone().detach()    
+    #         outputval = self.BetaNorm_new(x1, x2)
+    #         outputval[x2_index] = torch.tensor([0])
+    #         score_second_half += np.sum(outputval.numpy())
+
+    #     score_second_half *= 1/((n_sim)*(n_sim-1))
+    #     result = score_first_half - score_second_half*n_obs # We multiply by n_obs here as we are taking the score over all y_values and it is the same for each
+    #     if self.mean:
+    #         result /= n_obs
+    #     return result
+
     def loglikelihood(self, y_obs, y_sim):
-        # Computes the energy score of the samples
-        # y_obs = python list
-        # y_sim = python list of np arrays
-
-        if y_sim[0].shape != y_sim[-1].shape:
-            return "Use gradloglikelihood"
-
-        n_obs = len(y_obs)
-        n_sim = len(y_sim)
-
-        
-        y_obs_np = np.stack(y_obs)
-        y_sim_np = np.stack(y_sim)
-        
-
-        """observations is an array of size (n_obs, p) (p being the dimensionality), while simulations is an array
-        of size (n_sim, p). This works on numpy in the framework of the genBayes with SR paper.
-        We estimate this by building an empirical unbiased estimate of Eq. (2) in Ziel and Berk 2019"""
-
-
-        p = y_sim_np.shape[-1]
-        diff_X_y = y_obs_np.reshape(n_obs, 1, -1) - y_sim_np.reshape(1, n_sim, p)
-        diff_X_y = np.einsum('ijk, ijk -> ij', diff_X_y, diff_X_y)
-        diff_X_tildeX = y_sim_np.reshape(1, n_sim, p) - y_sim_np.reshape(n_sim, 1, p)
-        diff_X_tildeX = np.einsum('ijk, ijk -> ij', diff_X_tildeX, diff_X_tildeX)
-        if self.beta != 2:
-            diff_X_y **= (self.beta / 2.0)
-            diff_X_tildeX **= (self.beta / 2.0)
-
-        result = 2 * np.sum(np.mean(diff_X_y, axis=1)) - n_obs * np.sum(diff_X_tildeX) / (n_sim * (n_sim - 1))
-
-        if self.mean:
-            result /= y_obs_np.shape[0]
-
-        return result  # I think this should be negative here
-
-    def loglikelihood_new(self, y_obs, y_sim):
         n_sim = len(y_sim)        # check this added [0] under assumption that it was getting the outer layer
         n_obs = len(y_obs)
         #sim_dim = y_sim[0].shape[0]
         #print(sim_dim)
         y_sim_tensor = torch.tensor(np.stack(y_sim, axis=0), requires_grad=False)
         y_obs_tensor = torch.tensor(np.stack(y_obs, axis=0) , requires_grad=False)
+        y_obs_dim = len(y_obs[0])
         score_first_half = 0.0
         for y in y_obs_tensor:
-            y_sim = torch.reshape(y_sim_tensor,[n_sim,1]).clone().detach()  ####### ENSURE THAT GRADIENT IS RESET OVER LOOPS! #######
-            y = torch.reshape(y, [1]) # This should be the dimension not 1
-            outputval = self.BetaNorm_new(y_sim, y)
+            y_sim = torch.reshape(y_sim_tensor,[n_sim,y_obs_dim]).clone().detach()  ####### ENSURE THAT GRADIENT IS RESET OVER LOOPS! #######
+            y = torch.reshape(y, [y_obs_dim]) # This should be the dimension not 1
+            outputval = self.BetaNorm(y_sim, y)
             score_first_half += np.sum(outputval.numpy())
         score_first_half *= 2/n_sim   
         
         score_second_half = 0.0    # (1, theta_dim)
         for x2_index, x2 in enumerate(y_sim_tensor):
-            x1 = torch.reshape(y_sim_tensor,[n_sim,1]).clone().detach()             
-            x2 = torch.reshape(x2, [1]).clone().detach()    
-            outputval = self.BetaNorm_new(x1, x2)
+            x1 = torch.reshape(y_sim_tensor,[n_sim,y_obs_dim]).clone().detach()             
+            x2 = torch.reshape(x2, [y_obs_dim]).clone().detach()    
+            outputval = self.BetaNorm(x1, x2)
             outputval[x2_index] = torch.tensor([0])
             score_second_half += np.sum(outputval.numpy())
 
@@ -635,16 +667,88 @@ class EnergyScore():
     #     print(str(self.gradloglikelihood_new(y_obs, y_sim)) + " New Method")
     #     return self.gradloglikelihood_new(y_obs, y_sim)
 
-    def gradloglikelihood(self, y_obs, y_sim):
+    # def gradloglikelihood(self, y_obs, y_sim):
+    #     print(" --- ")
+    #     print(y_obs)
+    #     print(" ------ ")
+    #     print(y_sim)
+    #     print(" --- ")        
 
-        #if y_sim[0].shape == y_sim[-1].shape:   # This still doesn't make sense as they could be the same if the number of parameters is equal #
-        #    return "Use loglikelihood"
-        # print(y_sim)                                                        
+    #     #if y_sim[0].shape == y_sim[-1].shape:   # This still doesn't make sense as they could be the same if the number of parameters is equal #
+    #     #    return "Use loglikelihood"
+    #     # print(y_sim)                                                        
+    #     n_sim = int(len(y_sim)/2)        # check this added [0] under assumption that it was getting the outer layer
+    #     n_obs = len(y_obs)
+    #     #sim_dim = 1
+
+    #     # print(y_sim)
+
+    #     y_sim_tensor = torch.tensor(np.stack(y_sim[:n_sim], axis=0), requires_grad=True)
+    #     y_obs_tensor = torch.tensor(np.stack(y_obs, axis=0) , requires_grad=False)
+        
+    #     y_sim_jacobian_np = np.stack(y_sim[n_sim:]) # This will be dim : (n_sim, x_dim, theta_dim)        of height:x_dimension, width:parameter_dimension
+
+    #     gradientsumfirsthalf = np.zeros((1, y_sim_jacobian_np.shape[-1]))    # (g_dim (energy score so 1) , theta_dim)        
+    #     #print(gradientsumfirsthalf)
+    #     #print(y_obs)
+    #     #print(y_sim_tensor)
+    #     #print(y_sim_jacobian_np)
+    #     for y in y_obs_tensor:
+    #         #for x_index, x in enumerate(y_sim_tensor):
+
+    #         y_sim = torch.reshape(y_sim_tensor,[n_sim,1]).clone().detach().requires_grad_(True)  ####### ENSURE THAT GRADIENT IS RESET OVER LOOPS! #######
+    #         y = torch.reshape(y, [1]) # This should be the dimension not 1
+    #         #print(y_sim)
+    #         outputval = self.BetaNorm_new(y_sim, y)
+
+    #         outputval.backward(torch.ones_like(outputval))
+    #         y_sim_grad = y_sim.grad # Here we are getting (dg/dx1 , dg/ dx2 , dg/dx3 .... ) (1, x_dim) -> (1, x_dim)
+    #         #print(y_sim_grad)
+    #         #print(y_sim_jacobian_np)
+    #         dg_dtheta = np.dot(y_sim_grad.T,y_sim_jacobian_np)
+    #         #print(dg_dtheta)
+    #         gradientsumfirsthalf += dg_dtheta 
+    #     gradientsumfirsthalf *= 2/n_sim   
+        
+
+    #     gradientsumsecondhalf = np.zeros((1, y_sim_jacobian_np.shape[-1]))    # (1, theta_dim)
+    #     for x2_index, x2 in enumerate(y_sim_tensor):
+    #         x1 = torch.reshape(y_sim_tensor,[n_sim,1]).clone().detach().requires_grad_(True)                 
+    #             #if x1_index == x2_index:
+    #                 #continue
+    #         x2 = torch.reshape(x2, [1]).clone().detach().requires_grad_(True)      
+    #             #x2 = x2.clone().detach().requires_grad_(True)
+    #         #print(x1)
+    #         #print(x2)
+    #         outputval = self.BetaNorm_new(x1, x2)             
+    #         outputval.backward(torch.ones_like(outputval))         
+    #         x1_grad = x1.grad    # (dg/dx1) (1, x_dim)
+    #         #x2_grad = x2.grad    # (dg/dx2)
+    #         #print(" ___________ ")
+    #         #print(x1_grad)
+    #         x1_grad[x2_index] = torch.tensor([0])
+    #         #print(x1_grad)
+    #         #print(" ___________ ")
+    #         dg_dtheta_x1 = np.dot(x1_grad.T,y_sim_jacobian_np) # (1, x_dim) * (x_dim, theta_dim) -> (1, theta_dim)
+    #         #dg_dtheta_x2 = np.dot(x2_grad,y_sim_jacobian_np[x2_index])  
+    #         gradientsumsecondhalf += 2*dg_dtheta_x1               
+    #     gradientsumsecondhalf *= 1/((n_sim)*(n_sim-1))
+
+    #     result = gradientsumfirsthalf - gradientsumsecondhalf*n_obs # We multiply by n_obs here as we are taking the score over all y_values and it is the same for each
+    #     if self.mean:
+    #         result /= n_obs
+
+    #     return result
+                                               
+    def gradloglikelihood(self, y_obs, y_sim):  # This is the new testing for multidim samples the above is the original (commented out)
+        #print(y_obs)
+        #print(y_sim)
+        if type(y_obs[0]) == type(1.0):
+            y_obs = [np.array(obs) for obs in y_obs]
+            
         n_sim = int(len(y_sim)/2)        # check this added [0] under assumption that it was getting the outer layer
         n_obs = len(y_obs)
-        #sim_dim = 1
-
-        # print(y_sim)
+        y_obs_dim = len(y_obs[0])
 
         y_sim_tensor = torch.tensor(np.stack(y_sim[:n_sim], axis=0), requires_grad=True)
         y_obs_tensor = torch.tensor(np.stack(y_obs, axis=0) , requires_grad=False)
@@ -652,49 +756,57 @@ class EnergyScore():
         y_sim_jacobian_np = np.stack(y_sim[n_sim:]) # This will be dim : (n_sim, x_dim, theta_dim)        of height:x_dimension, width:parameter_dimension
 
         gradientsumfirsthalf = np.zeros((1, y_sim_jacobian_np.shape[-1]))    # (g_dim (energy score so 1) , theta_dim)        
-        #print(gradientsumfirsthalf)
-        #print(y_obs)
-        #print(y_sim_tensor)
-        #print(y_sim_jacobian_np)
-        for y in y_obs_tensor:
-            #for x_index, x in enumerate(y_sim_tensor):
 
-            y_sim = torch.reshape(y_sim_tensor,[n_sim,1]).clone().detach().requires_grad_(True)  ####### ENSURE THAT GRADIENT IS RESET OVER LOOPS! #######
-            y = torch.reshape(y, [1]) # This should be the dimension not 1
-            #print(y_sim)
-            outputval = self.BetaNorm_new(y_sim, y)
+        for y in y_obs_tensor:
+
+            y_sim = torch.reshape(y_sim_tensor,[n_sim,y_obs_dim]).clone().detach().requires_grad_(True)  ####### ENSURE THAT GRADIENT IS RESET OVER LOOPS! #######
+            y = torch.reshape(y, [y_obs_dim]) # This should be the dimension not 1
+
+            outputval = self.BetaNorm(y_sim, y)
 
             outputval.backward(torch.ones_like(outputval))
             y_sim_grad = y_sim.grad # Here we are getting (dg/dx1 , dg/ dx2 , dg/dx3 .... ) (1, x_dim) -> (1, x_dim)
-            #print(y_sim_grad)
-            #print(y_sim_jacobian_np)
-            dg_dtheta = np.dot(y_sim_grad.T,y_sim_jacobian_np)
-            #print(dg_dtheta)
-            gradientsumfirsthalf += dg_dtheta 
+            y_sim_grad = y_sim_grad.detach().numpy()
+
+            #print(" - - ")
+            #print(y_sim_grad.shape[1])
+            #print(len(y_sim_grad.shape))
+            if y_obs_dim > 1:
+                for index_n, element_n in enumerate(y_sim_grad):
+                    #print(index
+
+                    dg_dtheta = np.dot(y_sim_grad[index_n],y_sim_jacobian_np[index_n])
+                    # print(dg_dtheta)
+                    gradientsumfirsthalf += dg_dtheta 
+            else:
+                dg_dtheta = np.dot(y_sim_grad.T,y_sim_jacobian_np)
+                gradientsumfirsthalf += dg_dtheta
         gradientsumfirsthalf *= 2/n_sim   
         
 
         gradientsumsecondhalf = np.zeros((1, y_sim_jacobian_np.shape[-1]))    # (1, theta_dim)
         for x2_index, x2 in enumerate(y_sim_tensor):
-            x1 = torch.reshape(y_sim_tensor,[n_sim,1]).clone().detach().requires_grad_(True)                 
-                #if x1_index == x2_index:
-                    #continue
-            x2 = torch.reshape(x2, [1]).clone().detach().requires_grad_(True)      
-                #x2 = x2.clone().detach().requires_grad_(True)
-            #print(x1)
-            #print(x2)
-            outputval = self.BetaNorm_new(x1, x2)             
+            x1 = torch.reshape(y_sim_tensor,[n_sim,y_obs_dim]).clone().detach().requires_grad_(True)                 
+
+            x2 = torch.reshape(x2, [y_obs_dim]).clone().detach().requires_grad_(True)      
+ 
+            outputval = self.BetaNorm(x1, x2)             
             outputval.backward(torch.ones_like(outputval))         
             x1_grad = x1.grad    # (dg/dx1) (1, x_dim)
-            #x2_grad = x2.grad    # (dg/dx2)
-            #print(" ___________ ")
-            #print(x1_grad)
-            x1_grad[x2_index] = torch.tensor([0])
-            #print(x1_grad)
-            #print(" ___________ ")
-            dg_dtheta_x1 = np.dot(x1_grad.T,y_sim_jacobian_np) # (1, x_dim) * (x_dim, theta_dim) -> (1, theta_dim)
-            #dg_dtheta_x2 = np.dot(x2_grad,y_sim_jacobian_np[x2_index])  
-            gradientsumsecondhalf += 2*dg_dtheta_x1               
+
+            x1_grad[x2_index] = torch.tensor([0.0]*y_obs_dim)
+            x1_grad = x1_grad.detach().numpy()
+
+            if y_obs_dim > 1:
+                for index_n, element_n in enumerate(x1_grad):
+
+                    dg_dtheta = np.dot(x1_grad[index_n],y_sim_jacobian_np[index_n])
+                    # print(dg_dtheta)
+                    gradientsumsecondhalf += 2*dg_dtheta 
+            else:
+                dg_dtheta = np.dot(x1_grad.T,y_sim_jacobian_np)
+                gradientsumsecondhalf += 2*dg_dtheta
+           
         gradientsumsecondhalf *= 1/((n_sim)*(n_sim-1))
 
         result = gradientsumfirsthalf - gradientsumsecondhalf*n_obs # We multiply by n_obs here as we are taking the score over all y_values and it is the same for each
@@ -702,9 +814,10 @@ class EnergyScore():
             result /= n_obs
 
         return result
-                                               
 
-    def BetaNorm_new(self, x1, x2):
+
+
+    def BetaNorm(self, x1, x2):
         #print(x1)
         #print(x2)
         assert len(x2.shape) == 1, "x2 should be a 1D tensor"
@@ -717,67 +830,67 @@ class EnergyScore():
         #print(" $$$ ")
         return norm_beta
     
-    def gradloglikelihood_old(self, y_obs, y_sim):
+#     def gradloglikelihood_old(self, y_obs, y_sim):
 
-        #if y_sim[0].shape == y_sim[-1].shape:   # This still doesn't make sense as they could be the same if the number of parameters is equal #
-        #    return "Use loglikelihood"
-        # print(y_sim)                                                        
-        n_sim = int(len(y_sim)/2)        # check this added [0] under assumption that it was getting the outer layer
-        n_obs = len(y_obs)
-        # print(y_sim)
+#         #if y_sim[0].shape == y_sim[-1].shape:   # This still doesn't make sense as they could be the same if the number of parameters is equal #
+#         #    return "Use loglikelihood"
+#         # print(y_sim)                                                        
+#         n_sim = int(len(y_sim)/2)        # check this added [0] under assumption that it was getting the outer layer
+#         n_obs = len(y_obs)
+#         # print(y_sim)
 
-        y_sim_tensor = torch.tensor(np.stack(y_sim[:n_sim], axis=0), requires_grad=True)
-        y_obs_tensor = torch.tensor(np.stack(y_obs, axis=0) , requires_grad=False)
+#         y_sim_tensor = torch.tensor(np.stack(y_sim[:n_sim], axis=0), requires_grad=True)
+#         y_obs_tensor = torch.tensor(np.stack(y_obs, axis=0) , requires_grad=False)
     
-        y_sim_jacobian_np = np.stack(y_sim[n_sim:]) # This will be dim : (n_sim, x_dim, theta_dim)        of height:x_dimension, width:parameter_dimension
+#         y_sim_jacobian_np = np.stack(y_sim[n_sim:]) # This will be dim : (n_sim, x_dim, theta_dim)        of height:x_dimension, width:parameter_dimension
 
-        gradientsumfirsthalf = np.zeros((1, y_sim_jacobian_np.shape[-1]))    # (g_dim (energy score so 1) , theta_dim)        
-        #print(gradientsumfirsthalf)
-        for y in y_obs_tensor:
-            for x_index, x in enumerate(y_sim_tensor):
-                x = x.clone().detach().requires_grad_(True)  ####### ENSURE THAT GRADIENT IS RESET OVER LOOPS! #######
-                #print(x)
-                #print(" ^ 1")
-                #print(y)
-                #print(" ^ 2")
-                outputval = self.BetaNorm(x, y)
-                #print(outputval)
-                #print(" ^ 3")
-                outputval.backward(torch.ones_like(x))
-                x_grad = x.grad # Here we are getting (dg/dx1 , dg/ dx2 , dg/dx3 .... ) (1, x_dim) -> (1, x_dim)
-                dg_dtheta = np.dot(x_grad,y_sim_jacobian_np[x_index])
-                gradientsumfirsthalf += dg_dtheta 
-        gradientsumfirsthalf *= 2/n_sim  
+#         gradientsumfirsthalf = np.zeros((1, y_sim_jacobian_np.shape[-1]))    # (g_dim (energy score so 1) , theta_dim)        
+#         #print(gradientsumfirsthalf)
+#         for y in y_obs_tensor:
+#             for x_index, x in enumerate(y_sim_tensor):
+#                 x = x.clone().detach().requires_grad_(True)  ####### ENSURE THAT GRADIENT IS RESET OVER LOOPS! #######
+#                 #print(x)
+#                 #print(" ^ 1")
+#                 #print(y)
+#                 #print(" ^ 2")
+#                 outputval = self.BetaNorm(x, y)
+#                 #print(outputval)
+#                 #print(" ^ 3")
+#                 outputval.backward(torch.ones_like(x))
+#                 x_grad = x.grad # Here we are getting (dg/dx1 , dg/ dx2 , dg/dx3 .... ) (1, x_dim) -> (1, x_dim)
+#                 dg_dtheta = np.dot(x_grad,y_sim_jacobian_np[x_index])
+#                 gradientsumfirsthalf += dg_dtheta 
+#         gradientsumfirsthalf *= 2/n_sim  
     
 
-        gradientsumsecondhalf = np.zeros((1, y_sim_jacobian_np.shape[-1]))    # (1, theta_dim)
-        for x1_index, x1 in enumerate(y_sim_tensor):
-            for x2_index, x2 in enumerate(y_sim_tensor):                   
-                if x1_index == x2_index:
-                    continue
-                x1 = x1.clone().detach().requires_grad_(True)      
-                x2 = x2.clone().detach().requires_grad_(True)
-                outputval = self.BetaNorm(x1, x2)             
-                outputval.backward(torch.ones_like(x1))         
-                x1_grad = x1.grad    # (dg/dx1) (1, x_dim)
-                x2_grad = x2.grad    # (dg/dx2)
-                dg_dtheta_x1 = np.dot(x1_grad,y_sim_jacobian_np[x1_index]) # (1, x_dim) * (x_dim, theta_dim) -> (1, theta_dim)
-                dg_dtheta_x2 = np.dot(x2_grad,y_sim_jacobian_np[x2_index])  
-                gradientsumsecondhalf += dg_dtheta_x1 + dg_dtheta_x2                
-        gradientsumsecondhalf *= 1/((n_sim)*(n_sim-1))
+#         gradientsumsecondhalf = np.zeros((1, y_sim_jacobian_np.shape[-1]))    # (1, theta_dim)
+#         for x1_index, x1 in enumerate(y_sim_tensor):
+#             for x2_index, x2 in enumerate(y_sim_tensor):                   
+#                 if x1_index == x2_index:
+#                     continue
+#                 x1 = x1.clone().detach().requires_grad_(True)      
+#                 x2 = x2.clone().detach().requires_grad_(True)
+#                 outputval = self.BetaNorm(x1, x2)             
+#                 outputval.backward(torch.ones_like(x1))         
+#                 x1_grad = x1.grad    # (dg/dx1) (1, x_dim)
+#                 x2_grad = x2.grad    # (dg/dx2)
+#                 dg_dtheta_x1 = np.dot(x1_grad,y_sim_jacobian_np[x1_index]) # (1, x_dim) * (x_dim, theta_dim) -> (1, theta_dim)
+#                 dg_dtheta_x2 = np.dot(x2_grad,y_sim_jacobian_np[x2_index])  
+#                 gradientsumsecondhalf += dg_dtheta_x1 + dg_dtheta_x2                
+#         gradientsumsecondhalf *= 1/((n_sim)*(n_sim-1))
 
-        result = gradientsumfirsthalf - gradientsumsecondhalf*n_obs # We multiply by n_obs here as we are taking the score over all y_values and it is the same for each
-        if self.mean:
-            result /= n_obs
+#         result = gradientsumfirsthalf - gradientsumsecondhalf*n_obs # We multiply by n_obs here as we are taking the score over all y_values and it is the same for each
+#         if self.mean:
+#             result /= n_obs
 
-        return result
+#         return result
                                                
-    def BetaNorm(self,x1, x2):      # If we are dealing with 2d arrays here we should get an array of size 
-#         #print(x1)
-#         #print(x2)
-#         # print(abs(x1-x2).pow(2))
-#         # print(x2.dim())                           
-         return abs(x1-x2).pow(2).sum(dim=-1).pow(self.beta/2)  # return abs(x1-x2).pow(2).sum(dim=x2.dim()).pow(self.beta/2)   TEST THIS FOR MULTIDIMENSIONAL
+#     def BetaNorm(self,x1, x2):      # If we are dealing with 2d arrays here we should get an array of size 
+# #         #print(x1)
+# #         #print(x2)
+# #         # print(abs(x1-x2).pow(2))
+# #         # print(x2.dim())                           
+#          return abs(x1-x2).pow(2).sum(dim=-1).pow(self.beta/2)  # return abs(x1-x2).pow(2).sum(dim=x2.dim()).pow(self.beta/2)   TEST THIS FOR MULTIDIMENSIONAL
 
 #################################
 
@@ -807,43 +920,65 @@ class KernelScore():
         self.kernelfunction = kernelfunction # Kernel function needs to be defined as a pytorch function.
         #super(SynLikelihood, self).__init__(statistics_calc)
 
-    def loglikelihood_old(self, y_obs, y_sim):
-        # Computes the energy score of the samples
-        # y_obs = python list
-        # y_sim = python list of np arrays
+    # def loglikelihood_old(self, y_obs, y_sim):
+    #     # Computes the energy score of the samples
+    #     # y_obs = python list
+    #     # y_sim = python list of np arrays
 
-        if y_sim[0].shape != y_sim[-1].shape:
-            return "Use gradloglikelihood"
+    #     if y_sim[0].shape != y_sim[-1].shape:
+    #         return "Use gradloglikelihood"
 
-        n_obs = len(y_obs)
-        n_sim = len(y_sim)
+    #     n_obs = len(y_obs)
+    #     n_sim = len(y_sim)
 
         
-        y_obs_np = np.stack(y_obs)
-        y_sim_np = np.stack(y_sim)
+    #     y_obs_np = np.stack(y_obs)
+    #     y_sim_np = np.stack(y_sim)
         
 
-        """observations is an array of size (n_obs, p) (p being the dimensionality), while simulations is an array
-        of size (n_sim, p). This works on numpy in the framework of the genBayes with SR paper.
-        We estimate this by building an empirical unbiased estimate of Eq. (2) in Ziel and Berk 2019"""
+    #     """observations is an array of size (n_obs, p) (p being the dimensionality), while simulations is an array
+    #     of size (n_sim, p). This works on numpy in the framework of the genBayes with SR paper.
+    #     We estimate this by building an empirical unbiased estimate of Eq. (2) in Ziel and Berk 2019"""
 
 
-        p = y_sim_np.shape[-1]
-        diff_X_y = y_obs_np.reshape(n_obs, 1, -1) - y_sim_np.reshape(1, n_sim, p)
-        diff_X_y = np.einsum('ijk, ijk -> ij', diff_X_y, diff_X_y)
-        diff_X_tildeX = y_sim_np.reshape(1, n_sim, p) - y_sim_np.reshape(n_sim, 1, p)
-        diff_X_tildeX = np.einsum('ijk, ijk -> ij', diff_X_tildeX, diff_X_tildeX)
-        if self.beta != 2:
-            diff_X_y **= (self.beta / 2.0)
-            diff_X_tildeX **= (self.beta / 2.0)
+    #     p = y_sim_np.shape[-1]
+    #     diff_X_y = y_obs_np.reshape(n_obs, 1, -1) - y_sim_np.reshape(1, n_sim, p)
+    #     diff_X_y = np.einsum('ijk, ijk -> ij', diff_X_y, diff_X_y)
+    #     diff_X_tildeX = y_sim_np.reshape(1, n_sim, p) - y_sim_np.reshape(n_sim, 1, p)
+    #     diff_X_tildeX = np.einsum('ijk, ijk -> ij', diff_X_tildeX, diff_X_tildeX)
+    #     if self.beta != 2:
+    #         diff_X_y **= (self.beta / 2.0)
+    #         diff_X_tildeX **= (self.beta / 2.0)
 
-        result = 2 * np.sum(np.mean(diff_X_y, axis=1)) - n_obs * np.sum(diff_X_tildeX) / (n_sim * (n_sim - 1))
+    #     result = 2 * np.sum(np.mean(diff_X_y, axis=1)) - n_obs * np.sum(diff_X_tildeX) / (n_sim * (n_sim - 1))
 
-        if self.mean:
-            result /= y_obs_np.shape[0]
+    #     if self.mean:
+    #         result /= y_obs_np.shape[0]
 
-        return result  # I think this should be negative here
+    #     return result  # I think this should be negative here
 
+    # def loglikelihood(self, y_obs, y_sim):
+    #     n_sim = len(y_sim)        # check this added [0] under assumption that it was getting the outer layer
+    #     n_obs = len(y_obs)
+    #     #sim_dim = y_sim[0].shape[0]
+    #     #print(sim_dim)
+    #     y_sim_tensor = torch.tensor(np.stack(y_sim, axis=0), requires_grad=False)
+    #     y_obs_tensor = torch.tensor(np.stack(y_obs, axis=0) , requires_grad=False)
+    #     score_first_half = 0.0
+    #     for y in y_obs_tensor:
+    #         y_sim = torch.reshape(y_sim_tensor,[n_sim,1]).clone().detach()  ####### ENSURE THAT GRADIENT IS RESET OVER LOOPS! #######
+    #         y = torch.reshape(y, [1]) # This should be the dimension not 1
+    #         outputval = self.kernelfunction(y_sim, y)
+    #         score_first_half += np.sum(outputval.numpy())
+    #     score_first_half *= 2/n_sim   
+        
+    #     score_second_half = 0.0    # (1, theta_dim)
+    #     for x2_index, x2 in enumerate(y_sim_tensor):
+    #         x1 = torch.reshape(y_sim_tensor,[n_sim,1]).clone().detach()             
+    #         x2 = torch.reshape(x2, [1]).clone().detach()    
+    #         outputval = self.kernelfunction(x1, x2)
+    #         outputval[x2_index] = torch.tensor([0])
+    #         score_second_half += np.sum(outputval.numpy())
     def loglikelihood(self, y_obs, y_sim):
         n_sim = len(y_sim)        # check this added [0] under assumption that it was getting the outer layer
         n_obs = len(y_obs)
@@ -851,37 +986,105 @@ class KernelScore():
         #print(sim_dim)
         y_sim_tensor = torch.tensor(np.stack(y_sim, axis=0), requires_grad=False)
         y_obs_tensor = torch.tensor(np.stack(y_obs, axis=0) , requires_grad=False)
+        y_obs_dim = len(y_obs[0])
         score_first_half = 0.0
         for y in y_obs_tensor:
-            y_sim = torch.reshape(y_sim_tensor,[n_sim,1]).clone().detach()  ####### ENSURE THAT GRADIENT IS RESET OVER LOOPS! #######
-            y = torch.reshape(y, [1]) # This should be the dimension not 1
+            y_sim = torch.reshape(y_sim_tensor,[n_sim,y_obs_dim]).clone().detach()  ####### ENSURE THAT GRADIENT IS RESET OVER LOOPS! #######
+            y = torch.reshape(y, [y_obs_dim]) # This should be the dimension not 1
             outputval = self.kernelfunction(y_sim, y)
             score_first_half += np.sum(outputval.numpy())
         score_first_half *= 2/n_sim   
         
         score_second_half = 0.0    # (1, theta_dim)
         for x2_index, x2 in enumerate(y_sim_tensor):
-            x1 = torch.reshape(y_sim_tensor,[n_sim,1]).clone().detach()             
-            x2 = torch.reshape(x2, [1]).clone().detach()    
+            x1 = torch.reshape(y_sim_tensor,[n_sim,y_obs_dim]).clone().detach()             
+            x2 = torch.reshape(x2, [y_obs_dim]).clone().detach()    
             outputval = self.kernelfunction(x1, x2)
             outputval[x2_index] = torch.tensor([0])
             score_second_half += np.sum(outputval.numpy())
 
         score_second_half *= 1/((n_sim)*(n_sim-1))
-        result = score_first_half - score_second_half*n_obs # We multiply by n_obs here as we are taking the score over all y_values and it is the same for each
+        result = score_second_half*n_obs - score_first_half  # We multiply by n_obs here as we are taking the score over all y_values and it is the same for each
         if self.mean:
             result /= n_obs
         return result
 
-    def gradloglikelihood(self, y_obs, y_sim):
+    # def gradloglikelihood(self, y_obs, y_sim):
 
-        #if y_sim[0].shape == y_sim[-1].shape:   # This still doesn't make sense as they could be the same if the number of parameters is equal #
-        #    return "Use loglikelihood"
-        # print(y_sim)                                                        
+    #     #if y_sim[0].shape == y_sim[-1].shape:   # This still doesn't make sense as they could be the same if the number of parameters is equal #
+    #     #    return "Use loglikelihood"
+    #     # print(y_sim)                                                        
+    #     n_sim = int(len(y_sim)/2)        # check this added [0] under assumption that it was getting the outer layer
+    #     n_obs = len(y_obs)
+    #     # print(y_sim)
+    #     #sim_dim = y_sim[0].shape[0]
+
+    #     y_sim_tensor = torch.tensor(np.stack(y_sim[:n_sim], axis=0), requires_grad=True)
+    #     y_obs_tensor = torch.tensor(np.stack(y_obs, axis=0) , requires_grad=False)
+        
+    #     y_sim_jacobian_np = np.stack(y_sim[n_sim:]) # This will be dim : (n_sim, x_dim, theta_dim)        of height:x_dimension, width:parameter_dimension
+
+    #     gradientsumfirsthalf = np.zeros((1, y_sim_jacobian_np.shape[-1]))    # (g_dim (energy score so 1) , theta_dim)        
+    #     #print(gradientsumfirsthalf)
+    #     #print(y_obs)
+    #     #print(y_sim_tensor)
+    #     #print(y_sim_jacobian_np)
+    #     for y in y_obs_tensor:
+    #         #for x_index, x in enumerate(y_sim_tensor):
+
+    #         y_sim = torch.reshape(y_sim_tensor,[n_sim,1]).clone().detach().requires_grad_(True)  ####### ENSURE THAT GRADIENT IS RESET OVER LOOPS! #######
+    #         y = torch.reshape(y, [1]) # This should be the dimension not 1
+    #         #print(y_sim)
+    #         outputval = self.kernelfunction(y_sim, y)
+
+    #         outputval.backward(torch.ones_like(outputval))
+    #         y_sim_grad = y_sim.grad # Here we are getting (dg/dx1 , dg/ dx2 , dg/dx3 .... ) (1, x_dim) -> (1, x_dim)
+    #         #print(y_sim_grad)
+    #         #print(y_sim_jacobian_np)
+    #         dg_dtheta = np.dot(y_sim_grad.T,y_sim_jacobian_np)
+    #         #print(dg_dtheta)
+    #         gradientsumfirsthalf += dg_dtheta 
+    #     gradientsumfirsthalf *= 2/n_sim   
+        
+
+    #     gradientsumsecondhalf = np.zeros((1, y_sim_jacobian_np.shape[-1]))    # (1, theta_dim)
+    #     for x2_index, x2 in enumerate(y_sim_tensor):
+    #         x1 = torch.reshape(y_sim_tensor,[n_sim,1]).clone().detach().requires_grad_(True)                 
+    #             #if x1_index == x2_index:
+    #                 #continue
+    #         x2 = torch.reshape(x2, [1]).clone().detach().requires_grad_(True)      
+    #             #x2 = x2.clone().detach().requires_grad_(True)
+    #         #print(x1)
+    #         #print(x2)
+    #         outputval = self.kernelfunction(x1, x2)             
+    #         outputval.backward(torch.ones_like(outputval))         
+    #         x1_grad = x1.grad    # (dg/dx1) (1, x_dim)
+    #         #x2_grad = x2.grad    # (dg/dx2)
+    #         #print(" ___________ ")
+    #         #print(x1_grad)
+    #         x1_grad[x2_index] = torch.tensor([0])
+    #         #print(x1_grad)
+    #         #print(" ___________ ")
+    #         dg_dtheta_x1 = np.dot(x1_grad.T,y_sim_jacobian_np) # (1, x_dim) * (x_dim, theta_dim) -> (1, theta_dim)
+    #         #dg_dtheta_x2 = np.dot(x2_grad,y_sim_jacobian_np[x2_index])  
+    #         gradientsumsecondhalf += 2*dg_dtheta_x1               
+    #     gradientsumsecondhalf *= 1/((n_sim)*(n_sim-1))
+
+    #     result = gradientsumsecondhalf*n_obs - gradientsumfirsthalf # We multiply by n_obs here as we are taking the score over all y_values and it is the same for each
+    #     if self.mean:
+    #         result /= n_obs
+
+    #     return result
+
+    def gradloglikelihood(self, y_obs, y_sim):  # This is the new testing for multidim samples the above is the original (commented out)
+        #print(y_obs)
+        #print(y_sim)
+        if type(y_obs[0]) == type(1.0):
+            y_obs = [np.array(obs) for obs in y_obs]
+            
         n_sim = int(len(y_sim)/2)        # check this added [0] under assumption that it was getting the outer layer
         n_obs = len(y_obs)
-        # print(y_sim)
-        #sim_dim = y_sim[0].shape[0]
+        y_obs_dim = len(y_obs[0])
 
         y_sim_tensor = torch.tensor(np.stack(y_sim[:n_sim], axis=0), requires_grad=True)
         y_obs_tensor = torch.tensor(np.stack(y_obs, axis=0) , requires_grad=False)
@@ -889,49 +1092,57 @@ class KernelScore():
         y_sim_jacobian_np = np.stack(y_sim[n_sim:]) # This will be dim : (n_sim, x_dim, theta_dim)        of height:x_dimension, width:parameter_dimension
 
         gradientsumfirsthalf = np.zeros((1, y_sim_jacobian_np.shape[-1]))    # (g_dim (energy score so 1) , theta_dim)        
-        #print(gradientsumfirsthalf)
-        #print(y_obs)
-        #print(y_sim_tensor)
-        #print(y_sim_jacobian_np)
-        for y in y_obs_tensor:
-            #for x_index, x in enumerate(y_sim_tensor):
 
-            y_sim = torch.reshape(y_sim_tensor,[n_sim,1]).clone().detach().requires_grad_(True)  ####### ENSURE THAT GRADIENT IS RESET OVER LOOPS! #######
-            y = torch.reshape(y, [1]) # This should be the dimension not 1
-            #print(y_sim)
+        for y in y_obs_tensor:
+
+            y_sim = torch.reshape(y_sim_tensor,[n_sim,y_obs_dim]).clone().detach().requires_grad_(True)  ####### ENSURE THAT GRADIENT IS RESET OVER LOOPS! #######
+            y = torch.reshape(y, [y_obs_dim]) # This should be the dimension not 1
+
             outputval = self.kernelfunction(y_sim, y)
 
             outputval.backward(torch.ones_like(outputval))
             y_sim_grad = y_sim.grad # Here we are getting (dg/dx1 , dg/ dx2 , dg/dx3 .... ) (1, x_dim) -> (1, x_dim)
-            #print(y_sim_grad)
-            #print(y_sim_jacobian_np)
-            dg_dtheta = np.dot(y_sim_grad.T,y_sim_jacobian_np)
-            #print(dg_dtheta)
-            gradientsumfirsthalf += dg_dtheta 
+            y_sim_grad = y_sim_grad.detach().numpy()
+
+            #print(" - - ")
+            #print(y_sim_grad.shape[1])
+            #print(len(y_sim_grad.shape))
+            if y_obs_dim > 1:
+                for index_n, element_n in enumerate(y_sim_grad):
+                    #print(index
+
+                    dg_dtheta = np.dot(y_sim_grad[index_n],y_sim_jacobian_np[index_n])
+                    # print(dg_dtheta)
+                    gradientsumfirsthalf += dg_dtheta 
+            else:
+                dg_dtheta = np.dot(y_sim_grad.T,y_sim_jacobian_np)
+                gradientsumfirsthalf += dg_dtheta
         gradientsumfirsthalf *= 2/n_sim   
         
 
         gradientsumsecondhalf = np.zeros((1, y_sim_jacobian_np.shape[-1]))    # (1, theta_dim)
         for x2_index, x2 in enumerate(y_sim_tensor):
-            x1 = torch.reshape(y_sim_tensor,[n_sim,1]).clone().detach().requires_grad_(True)                 
-                #if x1_index == x2_index:
-                    #continue
-            x2 = torch.reshape(x2, [1]).clone().detach().requires_grad_(True)      
-                #x2 = x2.clone().detach().requires_grad_(True)
-            #print(x1)
-            #print(x2)
+            x1 = torch.reshape(y_sim_tensor,[n_sim,y_obs_dim]).clone().detach().requires_grad_(True)                 
+
+            x2 = torch.reshape(x2, [y_obs_dim]).clone().detach().requires_grad_(True)      
+ 
             outputval = self.kernelfunction(x1, x2)             
             outputval.backward(torch.ones_like(outputval))         
             x1_grad = x1.grad    # (dg/dx1) (1, x_dim)
-            #x2_grad = x2.grad    # (dg/dx2)
-            #print(" ___________ ")
-            #print(x1_grad)
-            x1_grad[x2_index] = torch.tensor([0])
-            #print(x1_grad)
-            #print(" ___________ ")
-            dg_dtheta_x1 = np.dot(x1_grad.T,y_sim_jacobian_np) # (1, x_dim) * (x_dim, theta_dim) -> (1, theta_dim)
-            #dg_dtheta_x2 = np.dot(x2_grad,y_sim_jacobian_np[x2_index])  
-            gradientsumsecondhalf += 2*dg_dtheta_x1               
+
+            x1_grad[x2_index] = torch.tensor([0.0]*y_obs_dim)
+            x1_grad = x1_grad.detach().numpy()
+
+            if y_obs_dim > 1:
+                for index_n, element_n in enumerate(x1_grad):
+
+                    dg_dtheta = np.dot(x1_grad[index_n],y_sim_jacobian_np[index_n])
+                    # print(dg_dtheta)
+                    gradientsumsecondhalf += 2*dg_dtheta 
+            else:
+                dg_dtheta = np.dot(x1_grad.T,y_sim_jacobian_np)
+                gradientsumsecondhalf += 2*dg_dtheta
+           
         gradientsumsecondhalf *= 1/((n_sim)*(n_sim-1))
 
         result = gradientsumsecondhalf*n_obs - gradientsumfirsthalf # We multiply by n_obs here as we are taking the score over all y_values and it is the same for each
@@ -939,6 +1150,7 @@ class KernelScore():
             result /= n_obs
 
         return result
+  
 
     # def gradloglikelihood(self, y_obs, y_sim):
 

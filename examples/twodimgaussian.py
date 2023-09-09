@@ -36,7 +36,7 @@ class Gaussian(ProbabilisticModel, Continuous):
         # input_values = self.transform_variables(input_values) # do this outside in inference.
         mu = input_values[0]
         sigma = input_values[1]
-        np.array(rng.normal(mu, sigma, k))
+        #np.array(rng.normal(mu, sigma, k))
 
         result = self.normal_model_pytorch([float(input_value) for input_value in input_values], k)#[np.array([x]) for x in vector_of_k_samples]
         return result
@@ -44,13 +44,16 @@ class Gaussian(ProbabilisticModel, Continuous):
     def normal_model_pytorch(self, input_values, n, return_grad = False):
         values = []
         for n in range(0,n):
-            value = []
+            # value = []
             mu = torch.tensor(input_values[0], requires_grad = True)
             sigma = torch.tensor(input_values[1], requires_grad = True)
             variables = [mu,sigma]
-            yval = torch.randn(1)*sigma + mu
-            value.append(yval.item())
-            values.append(np.array(value))
+            yval1 = torch.randn(1)*sigma + mu
+            yval2 = torch.randn(1)*sigma + mu
+            #value.append([yval1.item(),yval2.item()])
+            value = np.array([yval1.item(),yval2.item()])
+            #values.append(np.array(value))
+            values.append(value)
         return values
 
 
@@ -66,17 +69,31 @@ class Gaussian(ProbabilisticModel, Continuous):
         values = []
         gradvalues = []
         for n in range(0,n):
-            mu = torch.tensor(input_values[0], requires_grad = True)
-            sigma = torch.tensor(input_values[1], requires_grad = True)
-            z = torch.randn(1)
-            variables = [mu,sigma]
-            yval = z*sigma + mu
-            values.append(yval.item())
-            yval.backward()
-            gradvalue = []
-            for var in variables:
-                gradvalue.append(var.grad.item())
-            gradvalues.append(gradvalue)
+            mu1 = torch.tensor(input_values[0], requires_grad = True)
+            sigma1 = torch.tensor(input_values[1], requires_grad = True)
+            z1 = torch.randn(1)
+            variables1 = [mu1,sigma1]
+            yval1 = z1*sigma1 + mu1
+            yval1.backward()
+
+            mu2 = torch.tensor(input_values[0], requires_grad = True)
+            sigma2 = torch.tensor(input_values[1], requires_grad = True)
+            z2 = torch.randn(1)
+            variables2 = [mu2,sigma2]
+            yval2 = z2*sigma2 + mu2
+            yval2.backward()
+
+            values.append([yval1.item(),yval2.item()])
+
+            gradvalue1 = []
+            for var in variables1:
+                gradvalue1.append(var.grad.item())
+
+            gradvalue2 = []
+            for var in variables2:
+                gradvalue2.append(var.grad.item())
+
+            gradvalues.append([gradvalue1, gradvalue2])
         return values + gradvalues
 
     def _check_output(self, values):
@@ -97,3 +114,4 @@ class Gaussian(ProbabilisticModel, Continuous):
 
     def inverse_transform_list(self):
         return self.ordered_inverse_transforms
+    

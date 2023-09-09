@@ -8,7 +8,7 @@ from abcpy.statistics import Identity
 from Gaussian_model import Gaussian
 
 
-def BetaNormNeg(x1, x2):
+def BetaNormNeg(x1, x2, beta):
     assert len(x2.shape) == 1, "x2 should be a 1D tensor"
     assert x1.shape[1:] == x2.shape, "The last dimensions of x1 and x2 should match"
     
@@ -16,6 +16,7 @@ def BetaNormNeg(x1, x2):
     diff = x1 - x2
     norm_beta = torch.sum(torch.abs(diff).pow(2), dim=-1).pow(beta/2)
     return -1*norm_beta
+
 
 # setup backend
 dummy = BackendDummy()
@@ -27,14 +28,14 @@ model = Gaussian([mu, sigma])
 
 stat_calc = Identity(degree=2, cross=False)
 
-beta = 1
-dist_calc = KernelScore(stat_calc, model, BetaNormNeg)
+kernelfunction = lambda x1,x2: BetaNormNeg(x1,x2,1.0)
+dist_calc = KernelScore(stat_calc, model, kernelfunction)
 
 y_obs = model.forward_simulate([6,1], 100, rng=np.random.RandomState(8))  # Correct
 
 sampler = SGLD([model], [dist_calc], dummy, seed=1)
 
-journal = sampler.sample([y_obs], 100, 100, 2000, step_size=0.00001, w_val = 300, diffusion_factor=0.01, path_to_save_journal="tmp.jnl")
+journal = sampler.sample([y_obs], 100, 100, 100, step_size=0.0001, w_val = 30, diffusion_factor=0.01, path_to_save_journal="tmp.jnl")
 
 journal.plot_posterior_distr(path_to_save="posterior.png")
 journal.traceplot()

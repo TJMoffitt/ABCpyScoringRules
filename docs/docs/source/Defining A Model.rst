@@ -112,7 +112,7 @@ We give below an example of a user defined model incorporating all of the featur
 .. module:: ModelFile
    :synopsis: User defined Model
 
-.. class:: UserDefinedModel
+.. class:: ModelName
 
     .. py:function:: __init__(parameters: List[Any], name: Optional[str]=None)
     
