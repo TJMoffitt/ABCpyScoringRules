@@ -8,7 +8,7 @@ sphinx_rtd_theme
 coverage
 mpi4py
 cloudpickle
-matplotlib
+matplotlib==3.7.2
 tqdm
 pot>=0.8.0
 torch==2.0.1
