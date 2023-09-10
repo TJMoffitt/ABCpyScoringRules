@@ -245,15 +245,15 @@ class InverseTests(unittest.TestCase):
 
     def test_Uniform(self):
         U = Uniform([[0, 1], [1, 2]])
-        self.assertTrue(U.transform_list() == [False,False])
+        self.assertTrue(U.inverse_transform_list() == [False,False])
 
     def test_Normal(self):
         N = Normal([1, 0.1])
-        self.assertTrue(N.transform_list() == [False, torch.log])
+        self.assertTrue(N.inverse_transform_list() == [False, torch.log])
 
     def test_StudentT(self):
         S = StudentT([3, 1])
-        self.assertTrue(S.transform_list() == [False, torch.log])
+        self.assertTrue(S.inverse_transform_list() == [False, torch.log])
 
     # def test_MultivariateNormal(self):
     #     M = MultivariateNormal([[1, 0], [[1, 0], [0, 1]]])
@@ -265,27 +265,29 @@ class InverseTests(unittest.TestCase):
 
     def test_LogNormal(self):
         LN = LogNormal([3, 1])
-        self.assertTrue(LN.transform_list() == [False, torch.log])
+        self.assertTrue(LN.inverse_transform_list() == [False, torch.log])
 
     def test_Exponential(self):
         EXP = Exponential([3])
-        self.assertTrue(EXP.transform_list() == [torch.log])
+        self.assertTrue(EXP.inverse_transform_list() == [torch.log])
 
 
 class GradPdfTests(unittest.TestCase):
     """Tests whether the dimensions of all continuous models are defined in the correct way."""
 
     def test_Uniform(self):
-        U = Uniform([[0, 1], [1, 2]])
-        self.assertTrue(U.gradlogpdf(1) == 0)
+        U = Uniform([[0], [1]])
+        self.assertAlmostEqual(U.gradlogpdf([[0], [1]], 1),  0)
 
     def test_Normal(self):
         N = Normal([1, 0.1])
-        self.assertTrue(N.gradlogpdf(1) == 0.123456)
+        #print(N.gradlogpdf([1, 0.1], 1))
+        self.assertAlmostEqual(N.gradlogpdf([1, 0.1], 1) , 0.0)
 
     def test_StudentT(self):
         S = StudentT([3, 1])
-        self.assertTrue(S.gradlogpdf(1) == 0.123456)
+        #print(S.gradlogpdf([3, 1], 1))
+        self.assertAlmostEqual(S.gradlogpdf([3, 1], 1), -0.6)
 
     # def test_MultivariateNormal(self):
     #     M = MultivariateNormal([[1, 0], [[1, 0], [0, 1]]])
@@ -297,12 +299,20 @@ class GradPdfTests(unittest.TestCase):
 
     def test_LogNormal(self):
         LN = LogNormal([3, 1])
-        self.assertTrue(LN.gradlogpdf(1) == 0.123456)
+        #print(LN.gradlogpdf([3, 1], 1))
+        self.assertAlmostEqual(LN.gradlogpdf([3, 1], 1) , 2.0)
 
     def test_Exponential(self):
         EXP = Exponential([3])
-        self.assertTrue(EXP.gradlogpdf(1) == 0.123456)
+        #print(EXP.gradlogpdf([3], 1))
+        self.assertAlmostEqual(EXP.gradlogpdf([3], 1) , -3.0)
 
 
 if __name__ == '__main__':
     unittest.main()
+    #gradtests = GradPdfTests()
+    #gradtests.test_Exponential()
+    #gradtests.test_LogNormal()
+    #gradtests.test_Normal()
+    #gradtests.test_StudentT()
+    #gradtests.test_Uniform()

@@ -1,6 +1,6 @@
 Examples
 =====
-Example inference for user-defined Gaussian / G-and-K models / Multidimensional simulator
+Example inference for user-defined Gaussian / G-and-K models / Array simulations
 
 ------------
 
@@ -329,12 +329,12 @@ number of posterior samples will increase the accuracy of this posterior distrib
 
 
 
-Multidimensional sampler
+Array simulations
 
-The Scoring rule setup allows for user defined models which produce multiple elements per sample, we give an example
+The Scoring rule setup allows for user defined models which produce multiple elements per simulation, we give an example
 below of a function which produces pairs of values from a gaussian distribution with the same parameters. This setup 
-can be used to create models for the analysis of model which produce timeseries (for example in a 
-lorenz 95 model) or which have correlated variables.
+can be used to create models which produce timeseries (for example in a 
+lorenz 95 model) or which have other correlated variables.
 
 .. code-block:: python
 
@@ -455,7 +455,7 @@ lorenz 95 model) or which have correlated variables.
         def inverse_transform_list(self):
             return self.ordered_inverse_transforms
 
-and called as before with 
+and this can be called as before with 
 
 .. code-block:: python
 

@@ -114,11 +114,11 @@ We give below an example of a user defined model incorporating all of the featur
 
 .. class:: ModelName
 
-    .. py:function:: __init__(parameters: List[Any], name: Optional[str]=None)
+    .. py:function:: __init__(parameters: List[Float or ContinuousModel], name: Optional[str]=None)
     
         When initialising the user-defined model, this function ensures that the model works in the `abcpy` structure by adding the input parameters (either prior pdfs or hyperparameters) into a graph. This graph is then used throughout the graph tools class and elsewhere in the existing `abcpy` structure.
         
-        :param parameters: List of parameters.
+        :param parameters: List of prior parameters. Either floats or ContinousModel variables
         :param name: Optional name for the model.
 
         for example you could initialise your model like this 
@@ -151,13 +151,13 @@ We give below an example of a user defined model incorporating all of the featur
         :param n: Number of required simulations.
         :return: Returns a set of n simulations.
     
-    .. py:function:: grad_forward_simulate(parameter_values: List[Any], n: int) -> Tuple[List[Any], List[List[float]]]
+    .. py:function:: grad_forward_simulate(parameter_values: List[Any], n: int) -> list[simlations, simulationgradients]
     
         Compute the gradient of the forward simulation.
         
         :param parameter_values: List of parameters for the model.
         :param n: Number of required simulations.
-        :return: Returns a tuple of simulations and their corresponding gradients.
+        :return: Returns a list of simulations and their corresponding gradients.
     
     .. py:function:: _check_output(output_values: List[Any]) -> bool
     
@@ -172,7 +172,7 @@ We give below an example of a user defined model incorporating all of the featur
     
     .. py:function:: transform_list() -> List[Union[bool, Callable]]
     
-        :return: Returns a list of transformation functions for the model parameters.
+        :return: Returns a list of pytorch functions for transformation of the model parameters.
     
     .. py:function:: inverse_transform_list() -> List[Union[bool, Callable]]
     

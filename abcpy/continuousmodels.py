@@ -125,7 +125,7 @@ class Uniform(ProbabilisticModel, Continuous):
     def gradlogpdf(self, input_values, x):
         # we know that log(pdf(x)) is the same for all values [a,b] and 0 for [-inf,a]U[b,inf], hence grad is 0 wrt x [-inf,inf] and undef at {a,b} (continuous so never sampled)
         
-        return 0   
+        return 0.0   
 
     def inverse_transform_list(self):
         return [False, False]

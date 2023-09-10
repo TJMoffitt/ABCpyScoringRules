@@ -633,13 +633,27 @@ class EnergyScore():
     #     return result
 
     def loglikelihood(self, y_obs, y_sim):
+        if type(y_obs) != type([1.0]):
+            raise TypeError("observations (y_sim) must be list")
+        if type(y_sim) != type([1.0]):
+            raise TypeError("simulations (y_sim) must be list")
+
         n_sim = len(y_sim)        # check this added [0] under assumption that it was getting the outer layer
         n_obs = len(y_obs)
+        if type(y_obs[0]) == type(1.0):
+            y_obs = [np.array([obs]) for obs in y_obs]
+        elif type(y_obs[0]) == type([1.0]):
+            y_obs = [np.array(obs) for obs in y_obs]
         #sim_dim = y_sim[0].shape[0]
         #print(sim_dim)
         y_sim_tensor = torch.tensor(np.stack(y_sim, axis=0), requires_grad=False)
         y_obs_tensor = torch.tensor(np.stack(y_obs, axis=0) , requires_grad=False)
-        y_obs_dim = len(y_obs[0])
+
+        
+        y_obs_dim = y_obs[0].shape[0]
+
+
+
         score_first_half = 0.0
         for y in y_obs_tensor:
             y_sim = torch.reshape(y_sim_tensor,[n_sim,y_obs_dim]).clone().detach()  ####### ENSURE THAT GRADIENT IS RESET OVER LOOPS! #######
@@ -743,16 +757,30 @@ class EnergyScore():
     def gradloglikelihood(self, y_obs, y_sim):  # This is the new testing for multidim samples the above is the original (commented out)
         #print(y_obs)
         #print(y_sim)
-        if type(y_obs[0]) == type(1.0):
-            y_obs = [np.array(obs) for obs in y_obs]
-            
-        n_sim = int(len(y_sim)/2)        # check this added [0] under assumption that it was getting the outer layer
+        if type(y_obs) != type([1.0]):
+            raise TypeError("observations (y_sim) must be list")
+        if type(y_sim) != type([1.0]):
+            raise TypeError("simulations (y_sim) must be list")
+
+        n_sim = int(len(y_sim)/2)         # check this added [0] under assumption that it was getting the outer layer
         n_obs = len(y_obs)
-        y_obs_dim = len(y_obs[0])
+
+        if type(y_obs[0]) == type(1.0):
+            y_obs = [np.array([obs]) for obs in y_obs]
+        elif type(y_obs[0]) == type([1.0]):
+            y_obs = [np.array(obs) for obs in y_obs]
+                   
+        y_obs_dim = y_obs[0].shape[0]
+        # if type(y_obs[0]) == type(1.0):
+        #     y_obs = [np.array(obs) for obs in y_obs]
+            
+        # n_sim = int(len(y_sim)/2)        # check this added [0] under assumption that it was getting the outer layer
+        # n_obs = len(y_obs)
+        # y_obs_dim = len(y_obs[0])
 
         y_sim_tensor = torch.tensor(np.stack(y_sim[:n_sim], axis=0), requires_grad=True)
         y_obs_tensor = torch.tensor(np.stack(y_obs, axis=0) , requires_grad=False)
-        
+
         y_sim_jacobian_np = np.stack(y_sim[n_sim:]) # This will be dim : (n_sim, x_dim, theta_dim)        of height:x_dimension, width:parameter_dimension
 
         gradientsumfirsthalf = np.zeros((1, y_sim_jacobian_np.shape[-1]))    # (g_dim (energy score so 1) , theta_dim)        
@@ -980,13 +1008,27 @@ class KernelScore():
     #         outputval[x2_index] = torch.tensor([0])
     #         score_second_half += np.sum(outputval.numpy())
     def loglikelihood(self, y_obs, y_sim):
+        if type(y_obs) != type([1.0]):
+            raise TypeError("observations (y_sim) must be list")
+        if type(y_sim) != type([1.0]):
+            raise TypeError("simulations (y_sim) must be list")
+
         n_sim = len(y_sim)        # check this added [0] under assumption that it was getting the outer layer
         n_obs = len(y_obs)
+        if type(y_obs[0]) == type(1.0):
+            y_obs = [np.array([obs]) for obs in y_obs]
+        elif type(y_obs[0]) == type([1.0]):
+            y_obs = [np.array(obs) for obs in y_obs]
+        y_obs_dim = y_obs[0].shape[0]
+        # if type(y_obs[0]) == type(1.0):
+        #     y_obs = [np.array(obs) for obs in y_obs]
+        # n_sim = len(y_sim)        # check this added [0] under assumption that it was getting the outer layer
+        # n_obs = len(y_obs)
         #sim_dim = y_sim[0].shape[0]
         #print(sim_dim)
         y_sim_tensor = torch.tensor(np.stack(y_sim, axis=0), requires_grad=False)
         y_obs_tensor = torch.tensor(np.stack(y_obs, axis=0) , requires_grad=False)
-        y_obs_dim = len(y_obs[0])
+        #y_obs_dim = len(y_obs[0])
         score_first_half = 0.0
         for y in y_obs_tensor:
             y_sim = torch.reshape(y_sim_tensor,[n_sim,y_obs_dim]).clone().detach()  ####### ENSURE THAT GRADIENT IS RESET OVER LOOPS! #######
@@ -1079,16 +1121,29 @@ class KernelScore():
     def gradloglikelihood(self, y_obs, y_sim):  # This is the new testing for multidim samples the above is the original (commented out)
         #print(y_obs)
         #print(y_sim)
-        if type(y_obs[0]) == type(1.0):
-            y_obs = [np.array(obs) for obs in y_obs]
-            
-        n_sim = int(len(y_sim)/2)        # check this added [0] under assumption that it was getting the outer layer
-        n_obs = len(y_obs)
-        y_obs_dim = len(y_obs[0])
+        if type(y_obs) != type([1.0]):
+            raise TypeError("observations (y_sim) must be list")
+        if type(y_sim) != type([1.0]):
+            raise TypeError("simulations (y_sim) must be list")
 
+        n_sim = int(len(y_sim)/2)         # check this added [0] under assumption that it was getting the outer layer
+        n_obs = len(y_obs)
+        if type(y_obs[0]) == type(1.0):
+            y_obs = [np.array([obs]) for obs in y_obs]
+        elif type(y_obs[0]) == type([1.0]):
+            y_obs = [np.array(obs) for obs in y_obs]
+        #print(y_obs)
+        y_obs_dim = y_obs[0].shape[0]
+        # if type(y_obs[0]) == type(1.0):
+        #     y_obs = [np.array(obs) for obs in y_obs]
+            
+        # n_sim = int(len(y_sim)/2)        # check this added [0] under assumption that it was getting the outer layer
+        # n_obs = len(y_obs)
+        # y_obs_dim = len(y_obs[0])
         y_sim_tensor = torch.tensor(np.stack(y_sim[:n_sim], axis=0), requires_grad=True)
         y_obs_tensor = torch.tensor(np.stack(y_obs, axis=0) , requires_grad=False)
-        
+
+        #print(y_obs_tensor)
         y_sim_jacobian_np = np.stack(y_sim[n_sim:]) # This will be dim : (n_sim, x_dim, theta_dim)        of height:x_dimension, width:parameter_dimension
 
         gradientsumfirsthalf = np.zeros((1, y_sim_jacobian_np.shape[-1]))    # (g_dim (energy score so 1) , theta_dim)        

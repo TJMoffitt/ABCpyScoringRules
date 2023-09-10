@@ -5520,8 +5520,7 @@ class SGLD(BaseLikelihood, InferenceMethod):
             if not np.isnan(parameter_grad_scoring_rule_value).any():
                 accepted_parameter = accepted_parameter + 0.5*self.step_size*estimate_grad_u_theta + np.sqrt(self.step_size)*np.random.randn(self.theta_dim) #(self.p_var*self.step_size)[i] for i in range(0,self.theta_dim)]
             else:  
-                for x in range(0,100):
-                    print(" NAN VALUE!")
+                print("Sample Skipped. Gradient issue")
             accepted_parameter = [np.array(param) for param in accepted_parameter]
             self.set_parameters(accepted_parameter)
 

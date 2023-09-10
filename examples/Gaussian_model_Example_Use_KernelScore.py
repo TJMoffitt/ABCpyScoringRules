@@ -31,11 +31,11 @@ stat_calc = Identity(degree=2, cross=False)
 kernelfunction = lambda x1,x2: BetaNormNeg(x1,x2,1.0)
 dist_calc = KernelScore(stat_calc, model, kernelfunction)
 
-y_obs = model.forward_simulate([6,1], 100, rng=np.random.RandomState(8))  # Correct
+y_obs = model.forward_simulate([6,1], 2, rng=np.random.RandomState(8))  # Correct
 
 sampler = SGLD([model], [dist_calc], dummy, seed=1)
 
-journal = sampler.sample([y_obs], 100, 100, 100, step_size=0.0001, w_val = 30, diffusion_factor=0.01, path_to_save_journal="tmp.jnl")
+journal = sampler.sample([y_obs], 100, 4, 100, step_size=0.0001, w_val = 30, diffusion_factor=0.01, path_to_save_journal="tmp.jnl")
 
 journal.plot_posterior_distr(path_to_save="posterior.png")
 journal.traceplot()
