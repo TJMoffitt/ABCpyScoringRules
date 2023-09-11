@@ -11,11 +11,17 @@ to ensure correct functioning.
 
 To install and use the package, first download the zipped package from this link, and decompress the file in a folder of your choice.
 
-Navigate to the decompressed folder and run the following command (with adminisitrator priviledges ):
+Navigate to the decompressed folder and run the following commands (with adminisitrator priviledges), (numpy must
+be installed beforehand to avoid dependency clashes):
 
 .. code-block:: console
 
-   (.venv) $ python setup.py install
+    $ pip install numpy
+
+
+.. code-block:: console
+
+    $ python setup.py install
 
 This should then install abcpyscoringrules and all its required packages.
 The package should then be accessable via the following command
