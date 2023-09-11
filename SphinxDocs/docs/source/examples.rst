@@ -69,7 +69,6 @@ to infer the model parameters.
 
         def grad_forward_simulate(self, input_values, k, rng=np.random.RandomState()):
             # Takes input in the form:  [a,....,z]
-            #print(input_values)
             # Outputs: array: [x1, x2, ...... ,xn, [dx1/dtheta1, dx1/dtheta2], ...... [dxn/dtheta1, dxn/dtheta2],]
 
             result = self.grad_normal_model_pytorch([float(input_value) for input_value in input_values], k)#[np.array([x]) for x in vector_of_k_samples]
@@ -84,7 +83,7 @@ to infer the model parameters.
                 z = torch.randn(1)
                 variables = [mu,sigma]
                 yval = z*sigma + mu               
-        values.append(yval.item())
+                values.append(yval.item())
                 yval.backward()
                 gradvalue = []
                 for var in variables:
@@ -124,7 +123,6 @@ and then call run the following:
     from abcpy.statistics import Identity
     from Gaussian_model import Gaussian
 
-
     # setup backend
     dummy = BackendDummy()
 
@@ -145,9 +143,9 @@ and then call run the following:
     journal.plot_posterior_distr(path_to_save="posterior.png")
     journal.traceplot()
 
-To get a posterior plot of the sampled parameters for the mean and standard deviation. Here we generate our y_obs directly from the same 
+This generates a posterior plot of the sampled parameters for the mean and standard deviation. Here we generate our y_obs directly from the same 
 model, however the user could replace this with any properly formatted dataset and the sampler should converge whenever the prior values of mu and sigma provide reasonable
-coverage of the true parameters and he model is properly specified (ie actually normally distributed) (note here that the values for w_val, step_size and burn in may need to be
+coverage of the true parameters and the model is properly specified (ie the observations are actually normally distributed) (note here that the values for w_val, step_size and burn in may need to be
 adjusted to ensure convergence depending on how close your priors are to the true distribution)
 
 We give below another example using the kernelscore with a user defined rbf kernel using the SGLD algorithm
@@ -200,7 +198,8 @@ We give below another example using the kernelscore with a user defined rbf kern
 
 G-and-K Model
 
-We define another user define model below in the form of the g and k model [cite]
+We define another model below for a simple g and k model [M. A. Haynes et al,  Robustness of ranking and selection rules
+using generalised g-and-k distributions. Journal of Statistical Planning and Inference, 1997.] with four input parameters
 The code is provided here:
 
 .. code-block:: python
@@ -320,7 +319,7 @@ and then running the following to infer the the A and B parameter
         journal.plot_posterior_distr(path_to_save="posterior.png")
         journal.traceplot()
 
-and we get the following output for our plot, correctly estimating the posterior values 5 and 1 (increasing the 
+Producing the following output for our plot, correctly estimating the posterior values 5 and 1 (increasing the 
 number of posterior samples will increase the accuracy of this posterior distribution even further)
 
 .. image:: Images/gandkmodelposterior.png
@@ -333,7 +332,7 @@ Array simulations
 
 The Scoring rule setup allows for user defined models which produce multiple elements per simulation, we give an example
 below of a function which produces pairs of values from a gaussian distribution with the same parameters. This setup 
-can be used to create models which produce timeseries (for example in a 
+can be used to analyse models which produce time series (for example in a 
 lorenz 95 model) or which have other correlated variables.
 
 .. code-block:: python
@@ -373,33 +372,24 @@ lorenz 95 model) or which have other correlated variables.
 
         def forward_simulate(self, input_values, k, rng=np.random.RandomState()):
             # Extract the input parameters
-            # input_values = self.transform_variables(input_values) # do this outside in inference.
-            mu = input_values[0]
-            sigma = input_values[1]
-            #np.array(rng.normal(mu, sigma, k))
-
             result = self.normal_model_pytorch([float(input_value) for input_value in input_values], k)#[np.array([x]) for x in vector_of_k_samples]
             return result
 
         def normal_model_pytorch(self, input_values, n, return_grad = False):
             values = []
             for n in range(0,n):
-                # value = []
                 mu = torch.tensor(input_values[0], requires_grad = True)
                 sigma = torch.tensor(input_values[1], requires_grad = True)
                 variables = [mu,sigma]
                 yval1 = torch.randn(1)*sigma + mu
                 yval2 = torch.randn(1)*sigma + mu
-                #value.append([yval1.item(),yval2.item()])
                 value = np.array([yval1.item(),yval2.item()])
-                #values.append(np.array(value))
                 values.append(value)
             return values
 
 
         def grad_forward_simulate(self, input_values, k, rng=np.random.RandomState()):
             # Takes input in the form:  [a,....,z]
-            #print(input_values)
             # Outputs: array: [x1, x2, ...... ,xn, [dx1/dtheta1, dx1/dtheta2], ...... [dxn/dtheta1, dxn/dtheta2],]
 
             result = self.grad_normal_model_pytorch([float(input_value) for input_value in input_values], k)#[np.array([x]) for x in vector_of_k_samples]
@@ -489,7 +479,7 @@ and this can be called as before with
     journal.plot_posterior_distr(path_to_save="posterior.png")
     journal.traceplot()
 
-producing the following plot:
+producing the following output plot:
 
 .. image:: Images/DualGaussian.png
   :width: 400

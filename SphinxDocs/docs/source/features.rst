@@ -1,10 +1,12 @@
 Added functions
 =====
 
-A description of the added functions and their use.
+A description of the added functions
 ------------
 
-Each of the continuous models is extended for use in the developed samplers by the addition of the following functions:
+We give below a description of the added functions and how they are used
+
+First each of the continuous models is extended for use in the developed samplers by the addition of the following functions:
 
 .. class:: ContinuousModel
 
@@ -12,21 +14,21 @@ Each of the continuous models is extended for use in the developed samplers by t
 
         This function computes the gradient of the logarithm of the pdf. The gradient is explicitly defined for each class within the continuous models.
 
-        :param Input_values: A list containing the corresponding parameters for the chosen model. The variables should be provided in their true (post-transformation) form for accuracy. Below, we'll include a list of each mathematical variable as input for every model and its common name in the respective pdf. We'll also provide the explicit form of the pdf for clarity.
-        :param X: A single float value representing the point at which the gradient of the pdf is calculated. It should be provided in its post-transformation form, ensuring the gradlogpdf is computed directly on the given parameters.
+        :param Input_values: A list containing the corresponding parameters for the chosen model. See the original ABCpy documentation for descriptions of the parameters for each model
+        :param X: A single float value representing the point at which the gradient of the pdf is calculated. It should be provided in its post-transformation form, as the gradlogpdf is computed directly on the given parameters.
         :return: Gradient of the logarithm of the pdf at the point X.
         
     .. py:function:: transform_list() -> List[Callable]
 
-        Provides a list of transformations which will map values from the real line (where our sgld algorithms operate for each of the d parameters) to the appropriate space for our model pdf. For example, to R+ in the case of a Gaussian variance. These transformations, defined in PyTorch, are returned as a list in the order of the input parameters for each model. The transformations are utilized in [Name functions] from the graphtools class, enabling the operation of sgld algorithms over the entire real line.
+        Provides a list of transformations which will map values from the real line (where our sgld algorithms operate for each of the d parameters) to the appropriate space for our model pdf. For example, to R+ in the case of a Gaussian variance. These transformations, defined in PyTorch, are returned as a list in the order of the input parameters for each model. The transformations are utilized in the graphtools class, enabling the operation of sgld algorithms over the entire real line.
 
         :return: A list of transformation functions for model parameters.
         
     .. py:function:: inverse_transform_list() -> List[Callable]
 
-        Defines the inverse transformations corresponding to the functions in `transform_list`. The inverses are sequenced in the same order as the transformations. Each inverse function, designed in PyTorch, is used in specific functions (you can list them as [Add the names here]) in the graphtools class.
+        Defines the inverse transformations corresponding to the functions in `transform_list`. The inverses are sequenced in the same order as the transformations. Each inverse function is implemented in PyTorch and this again is used in the graphtools class.
 
-        :return: Inverses of the transformations from `transform_list`.
+        :return: A list of inverse transformation functions for model parameters.
 
 
 .. class:: Inference
@@ -56,12 +58,12 @@ Each of the continuous models is extended for use in the developed samplers by t
             Simulates likely parameter values for the user-defined model given observed values.
 
             :param observations: List of observations for which model parameters should be inferred.
-            :param n_samples: Number of posterior samples to generate post burn-in.
+            :param n_samples: Number of posterior parameter samples to generate post burn-in.
             :param n_samples_per_param: Number of samples generated for each iteration of the algorithm.
             :param burnin: The number of initial sampled parameters that should be discarded as their accuracy might be low.
             :param step_size: Defines the size of the change for each step in the algorithm.
-            :param iniPoint: Initial point for the simulation. 
-            :param w_val: Balances the trade-off between the scoring rule and the prior pdfs.
+            :param iniPoint: Initial point for the simulation.
+            :param w_val: Balances the trade-off between the scoring rule and the prior pdfs. Higher values give more weight to the scoring rule
             :param bounds: Bounds for the parameters.
             :param speedup_dummy: If True, speedup measures are applied.
             :param n_groups_correlated_randomness: Number of groups for correlated randomness.
@@ -118,7 +120,7 @@ Each of the continuous models is extended for use in the developed samplers by t
 
 .. class:: Approx_Lhd
 
-    In `approx_lhd`, we introduce scoring rules for parameter inference. We currently support energy and kernel score methods. Each method computes both the log_score and the gradient of the log score.
+    In `approx_lhd`, we introduce scoring rules for parameter inference. We currently support energy and kernel score methods. Each method computes both the log score and the gradient of the log score.
 
     .. class:: EnergyScore
 
@@ -166,7 +168,7 @@ Each of the continuous models is extended for use in the developed samplers by t
 
             :param Statistics_calc: Not used. This parameter might be removed in future versions.
             :param Model: User-defined model for which parameters are being calculated. This parameter is not used and might be removed in future versions.
-            :param Kernel: A PyTorch function that defines the kernel for computing the scoring function. For instance, the energy score can be obtained by supplying the beta_norm function from the energy score (with a negated returned value). Another example is the RBF function [cite].
+            :param Kernel: A PyTorch function that defines the kernel for computing the scoring function. For instance, the energy score can be obtained by supplying the beta_norm function from the energy score (with a negated returned value). Another example is the RBF function [https://en.wikipedia.org/wiki/Radial_basis_function_kernel].
             :param Mean: If set to True, returns the mean of the kernel score over observed values. Default is False.
 
         .. py:method:: Loglikelihood(Y_obs: List[float], Y_Sim: List[float]) -> float
@@ -187,64 +189,64 @@ Each of the continuous models is extended for use in the developed samplers by t
 
 .. class:: graphtools
 
-   A litany of helper functions are defined in Graph Tools, bridging the gap between continuous priors, likelihood functions (scoring rules), user-defined models, and inference algorithms. Though these functions are primarily for internal use, ensuring the seamless operation of the package, they are documented here for transparency, further development, and understanding of the package's internals.
+   A litany of helper functions are defined in Graph Tools, bridging the gap between continuous priors, likelihood functions (scoring rules), user-defined models, and inference algorithms. Though these functions are primarily for internal use, ensuring the operation of the package, they are documented here for transparency, further development, and understanding of the package's internals.
 
-.. function:: GradSimulate(N_samples_per_param: int, Rng=None)
+    .. py:method:: GradSimulate(N_samples_per_param: int, Rng=None)
 
-   Simulates gradients. 
+        Simulates gradients. 
 
-   :param N_samples_per_param: Number of values and corresponding gradients to simulate.
-   :param Rng: Defaults to ``np.random.RandomState()``. However, this might be deprecated in future versions.
-   :return: [Needs Description]
+        :param N_samples_per_param: Number of values and corresponding gradients to simulate.
+        :param Rng: Defaults to ``np.random.RandomState()``. However, this might be deprecated in future versions.
+         :return: Returns a list of simulations and their corresponding gradients
    
-   .. note::
-      This function distinguishes itself by calling the ``grad_forward_simulate`` method instead of the usual ``forward_simulate``. Additionally, it applies the ``transform_variables`` function from the user-defined model, ensuring correct parameter value translation.
+         .. note::
+            This function distinguishes itself by calling the ``grad_forward_simulate`` method instead of the usual ``forward_simulate``. Additionally, it applies the ``transform_variables`` function from the user-defined model, ensuring correct parameter value translation.
 
-.. function:: grad_log_pdf_of_prior(Models: List, Parameters: List[np.array]) -> np.array
+    .. py:method:: grad_log_pdf_of_prior(Models: List, Parameters: List[np.array]) -> np.array
 
-   Computes the gradient of the logarithm of the PDFs for the priors.
+        Computes the gradient of the logarithm of the PDFs for the priors.
 
-   :param Models: List containing the variable for the user-defined model.
-   :param Parameters: List of numpy arrays representing the parameter values.
-   :return: Array of floats representing the gradients of the log of the PDFs based on the input.
+        :param Models: List containing the variable for the user-defined model.
+        :param Parameters: List of numpy arrays representing the parameter values for which the pdf is being evaluated.
+        :return: Array of floats representing the gradients of the log of the PDFs based on the input for each parameter.
 
-   .. note::
-      Current simulation algorithms are limited to one model at a time, though the input allows for a list to maintain consistency with existing abcpy structure.
+        .. note::
+             Current simulation algorithms are limited to one model at a time, though the input allows for a list to maintain consistency with existing abcpy structure.
 
-.. function:: apply_local_transform(model_prior, values) -> [ReturnType]
+    .. py:method:: apply_local_transform(model_prior, values) -> [ReturnType]
 
-   Transforms parent parameters into the correct space.
+        Transforms parent parameters into the correct space.
 
-   :param model_prior: [Needs Description]
-   :param values: [Needs Description]
-   :return: Transformed parameters.
+        :param model_prior: the variable for the model element for which you are applying the local transformations
+        :param values: The parameters to be transformed
+        :return: Transformed parameters.
 
-   .. note::
-      This function uses the transformations provided by ``transform_list()``. 
+        .. note::
+            This function uses the transformations provided by ``transform_list()``. 
 
-.. function:: full_transform() -> List
+    .. py:method:: full_transform() -> List
 
-   Collates all transformations from hierarchical prior models.
+        Collates all transformations from hierarchical prior models.
 
-   :return: Array containing transformations in the correct order.
+        :return: Array containing transformations in the correct order.
 
-.. function:: apply_full_transform(values: List) -> List
+    .. py:method:: apply_full_transform(values: List) -> List
 
-   Applies all transformations to a given set of values.
+        Applies all transformations to a given set of values.
 
-   :param values: Array of values.
-   :return: Transformed values array.
+        :param values: Array of values.
+        :return: Transformed values array.
 
-.. function:: full_inverse_transform() -> List
+    .. py:method:: full_inverse_transform() -> List
 
-   Compiles all inverse transformations from hierarchical prior models.
+         Compiles all inverse transformations from hierarchical prior models.
 
-   :return: Array containing inverse transformations in the correct order.
+         :return: Array containing inverse transformations in the correct order.
 
-.. function:: apply_full_inverse_transform(values: List) -> List
+    .. py:method:: apply_full_inverse_transform(values: List) -> List
 
-   Applies all inverse transformations to a given set of values.
+        Applies all inverse transformations to a given set of values.
 
-   :param values: Array of values.
-   :return: Transformed values array.
+        :param values: Array of values.
+         :return: Transformed values array.
 

@@ -4,7 +4,7 @@ Defining A Model
 User defined Model
 ------------
 
-We give below an example of a user defined model incorporating all of the features needed
+We give below an example of a user defined model incorporating all of the required features
 
 .. code-block:: python
 
@@ -43,11 +43,6 @@ We give below an example of a user defined model incorporating all of the featur
 
         def forward_simulate(self, input_values, k, rng=np.random.RandomState()):
             # Extract the input parameters
-            # input_values = self.transform_variables(input_values) # do this outside in inference.
-            mu = input_values[0]
-            sigma = input_values[1]
-            np.array(rng.normal(mu, sigma, k))
-
             result = self.normal_model_pytorch([float(input_value) for input_value in input_values], k)#[np.array([x]) for x in vector_of_k_samples]
             return result
 
@@ -63,12 +58,9 @@ We give below an example of a user defined model incorporating all of the featur
                 values.append(np.array(value))
             return values
 
-
         def grad_forward_simulate(self, input_values, k, rng=np.random.RandomState()):
             # Takes input in the form:  [a,....,z]
-            #print(input_values)
             # Outputs: array: [x1, x2, ...... ,xn, [dx1/dtheta1, dx1/dtheta2], ...... [dxn/dtheta1, dxn/dtheta2],]
-
             result = self.grad_normal_model_pytorch([float(input_value) for input_value in input_values], k)#[np.array([x]) for x in vector_of_k_samples]
             return result
 
@@ -81,7 +73,7 @@ We give below an example of a user defined model incorporating all of the featur
                 z = torch.randn(1)
                 variables = [mu,sigma]
                 yval = z*sigma + mu               
-        values.append(yval.item())
+                values.append(yval.item())
                 yval.backward()
                 gradvalue = []
                 for var in variables:
@@ -114,14 +106,14 @@ We give below an example of a user defined model incorporating all of the featur
 
 .. class:: ModelName
 
-    .. py:function:: __init__(parameters: List[Any], name: Optional[str]=None)
+    .. py:function:: __init__(parameters: List[Float or ContinuousModel], name: Optional[str]=None)
     
-        When initialising the user-defined model, this function ensures that the model works in the `abcpy` structure by adding the input parameters (either prior pdfs or hyperparameters) into a graph. This graph is then used throughout the graph tools class and elsewhere in the existing `abcpy` structure.
+        When initializing the user-defined model, this function ensures that the model works in the `abcpy` structure by adding the input parameters (either prior pdfs or hyperparameters) into a graph. This graph is then used throughout the graph tools class and elsewhere in the existing `abcpy` structure.
         
-        :param parameters: List of parameters.
+        :param parameters: List of prior parameters. Either floats or ContinousModel variables
         :param name: Optional name for the model.
 
-        for example you could initialise your model like this 
+        for example you could initialize your model like this 
         
         .. code-block:: python
         
@@ -151,13 +143,13 @@ We give below an example of a user defined model incorporating all of the featur
         :param n: Number of required simulations.
         :return: Returns a set of n simulations.
     
-    .. py:function:: grad_forward_simulate(parameter_values: List[Any], n: int) -> Tuple[List[Any], List[List[float]]]
+    .. py:function:: grad_forward_simulate(parameter_values: List[Any], n: int) -> list[simulations, simulationgradients]
     
         Compute the gradient of the forward simulation.
         
         :param parameter_values: List of parameters for the model.
         :param n: Number of required simulations.
-        :return: Returns a tuple of simulations and their corresponding gradients.
+        :return: Returns a list of simulations and their corresponding gradients.
     
     .. py:function:: _check_output(output_values: List[Any]) -> bool
     
@@ -172,7 +164,7 @@ We give below an example of a user defined model incorporating all of the featur
     
     .. py:function:: transform_list() -> List[Union[bool, Callable]]
     
-        :return: Returns a list of transformation functions for the model parameters.
+        :return: Returns a list of pytorch functions for transformation of the model parameters.
     
     .. py:function:: inverse_transform_list() -> List[Union[bool, Callable]]
     
@@ -196,36 +188,28 @@ You can then use this model as follows
     from abcpy.statistics import Identity
     from Gaussian_model import Gaussian
 
-
     # setup backend
     dummy = BackendDummy()
-
 
     mu = Normal([5, 1], name='mu')
     sigma = LogNormal([1,1], name='sigma')
     model = Gaussian([mu, sigma])
 
-
     stat_calc = Identity(degree=2, cross=False)
-
 
     dist_calc = EnergyScore(stat_calc, model, 1)
 
-
     y_obs = model.forward_simulate([6,1], 100, rng=np.random.RandomState(8)) 
-
 
     sampler = adSGLD([model], [dist_calc], dummy, seed=1)
 
-
     journal = sampler.sample([y_obs], 100, 100, 2000, step_size=0.0001, w_val = 300, diffusion_factor=0.01, path_to_save_journal="tmp.jnl")
-
 
     journal.plot_posterior_distr(path_to_save="posterior.png")
     journal.traceplot()
 
 
-running this code creates a variable journal containg details of the run and produces the following traceplot of your samples:
+running this code creates a variable journal containing details of the run and produces the following traceplot of your samples:
 
 .. image:: Images/UsagePageExampleRun.png
   :width: 400

@@ -1,54 +1,127 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
-    <title>Added functions &#8212; ABCPY - Scoring Rules 0.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Added functions &mdash; ABCPY - Scoring Rules 0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Examples" href="examples.html" />
-    <link rel="prev" title="Defining A Model" href="Defining%20A%20Model.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="prev" title="Defining A Model" href="Defining%20A%20Model.html" /> 
+</head>
 
-  </head><body>
-  
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
           
+          
+          <a href="index.html" class="icon icon-home">
+            ABCPY - Scoring Rules
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Defining%20A%20Model.html">Defining A Model</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Added functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#a-description-of-the-added-functions">A description of the added functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ContinuousModel"><code class="docutils literal notranslate"><span class="pre">ContinuousModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ContinuousModel.gradlogpdf"><code class="docutils literal notranslate"><span class="pre">ContinuousModel.gradlogpdf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ContinuousModel.transform_list"><code class="docutils literal notranslate"><span class="pre">ContinuousModel.transform_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ContinuousModel.inverse_transform_list"><code class="docutils literal notranslate"><span class="pre">ContinuousModel.inverse_transform_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Inference"><code class="docutils literal notranslate"><span class="pre">Inference</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Inference.SGLD"><code class="docutils literal notranslate"><span class="pre">Inference.SGLD</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Inference.ADSGLD"><code class="docutils literal notranslate"><span class="pre">Inference.ADSGLD</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Approx_Lhd"><code class="docutils literal notranslate"><span class="pre">Approx_Lhd</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Approx_Lhd.EnergyScore"><code class="docutils literal notranslate"><span class="pre">Approx_Lhd.EnergyScore</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Approx_Lhd.KernelScore"><code class="docutils literal notranslate"><span class="pre">Approx_Lhd.KernelScore</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#graphtools"><code class="docutils literal notranslate"><span class="pre">graphtools</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#graphtools.GradSimulate"><code class="docutils literal notranslate"><span class="pre">graphtools.GradSimulate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#graphtools.grad_log_pdf_of_prior"><code class="docutils literal notranslate"><span class="pre">graphtools.grad_log_pdf_of_prior()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#graphtools.apply_local_transform"><code class="docutils literal notranslate"><span class="pre">graphtools.apply_local_transform()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#graphtools.full_transform"><code class="docutils literal notranslate"><span class="pre">graphtools.full_transform()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#graphtools.apply_full_transform"><code class="docutils literal notranslate"><span class="pre">graphtools.apply_full_transform()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#graphtools.full_inverse_transform"><code class="docutils literal notranslate"><span class="pre">graphtools.full_inverse_transform()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#graphtools.apply_full_inverse_transform"><code class="docutils literal notranslate"><span class="pre">graphtools.apply_full_inverse_transform()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
 
-          <div class="body" role="main">
-            
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ABCPY - Scoring Rules</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Added functions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/features.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <section id="added-functions">
-<h1>Added functions<a class="headerlink" href="#added-functions" title="Permalink to this heading">¶</a></h1>
-<section id="a-description-of-the-added-functions-and-their-use">
-<h2>A description of the added functions and their use.<a class="headerlink" href="#a-description-of-the-added-functions-and-their-use" title="Permalink to this heading">¶</a></h2>
-<p>Each of the continuous models is extended for use in the developed samplers by the addition of the following functions:</p>
+<h1>Added functions<a class="headerlink" href="#added-functions" title="Permalink to this heading"></a></h1>
+<section id="a-description-of-the-added-functions">
+<h2>A description of the added functions<a class="headerlink" href="#a-description-of-the-added-functions" title="Permalink to this heading"></a></h2>
+<p>We give below a description of the added functions and how they are used</p>
+<p>First each of the continuous models is extended for use in the developed samplers by the addition of the following functions:</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="ContinuousModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ContinuousModel</span></span><a class="headerlink" href="#ContinuousModel" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ContinuousModel</span></span><a class="headerlink" href="#ContinuousModel" title="Permalink to this definition"></a></dt>
 <dd><dl class="py function">
 <dt class="sig sig-object py" id="ContinuousModel.gradlogpdf">
-<span class="sig-name descname"><span class="pre">gradlogpdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Input_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#ContinuousModel.gradlogpdf" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">gradlogpdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Input_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#ContinuousModel.gradlogpdf" title="Permalink to this definition"></a></dt>
 <dd><p>This function computes the gradient of the logarithm of the pdf. The gradient is explicitly defined for each class within the continuous models.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Input_values</strong> – A list containing the corresponding parameters for the chosen model. The variables should be provided in their true (post-transformation) form for accuracy. Below, we’ll include a list of each mathematical variable as input for every model and its common name in the respective pdf. We’ll also provide the explicit form of the pdf for clarity.</p></li>
-<li><p><strong>X</strong> – A single float value representing the point at which the gradient of the pdf is calculated. It should be provided in its post-transformation form, ensuring the gradlogpdf is computed directly on the given parameters.</p></li>
+<li><p><strong>Input_values</strong> – A list containing the corresponding parameters for the chosen model. See the original ABCpy documentation for descriptions of the parameters for each model</p></li>
+<li><p><strong>X</strong> – A single float value representing the point at which the gradient of the pdf is calculated. It should be provided in its post-transformation form, as the gradlogpdf is computed directly on the given parameters.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -59,8 +132,8 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ContinuousModel.transform_list">
-<span class="sig-name descname"><span class="pre">transform_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ContinuousModel.transform_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides a list of transformations which will map values from the real line (where our sgld algorithms operate for each of the d parameters) to the appropriate space for our model pdf. For example, to R+ in the case of a Gaussian variance. These transformations, defined in PyTorch, are returned as a list in the order of the input parameters for each model. The transformations are utilized in [Name functions] from the graphtools class, enabling the operation of sgld algorithms over the entire real line.</p>
+<span class="sig-name descname"><span class="pre">transform_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ContinuousModel.transform_list" title="Permalink to this definition"></a></dt>
+<dd><p>Provides a list of transformations which will map values from the real line (where our sgld algorithms operate for each of the d parameters) to the appropriate space for our model pdf. For example, to R+ in the case of a Gaussian variance. These transformations, defined in PyTorch, are returned as a list in the order of the input parameters for each model. The transformations are utilized in the graphtools class, enabling the operation of sgld algorithms over the entire real line.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A list of transformation functions for model parameters.</p>
@@ -70,11 +143,11 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="ContinuousModel.inverse_transform_list">
-<span class="sig-name descname"><span class="pre">inverse_transform_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ContinuousModel.inverse_transform_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the inverse transformations corresponding to the functions in <cite>transform_list</cite>. The inverses are sequenced in the same order as the transformations. Each inverse function, designed in PyTorch, is used in specific functions (you can list them as [Add the names here]) in the graphtools class.</p>
+<span class="sig-name descname"><span class="pre">inverse_transform_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ContinuousModel.inverse_transform_list" title="Permalink to this definition"></a></dt>
+<dd><p>Defines the inverse transformations corresponding to the functions in <cite>transform_list</cite>. The inverses are sequenced in the same order as the transformations. Each inverse function is implemented in PyTorch and this again is used in the graphtools class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Inverses of the transformations from <cite>transform_list</cite>.</p>
+<dd class="field-odd"><p>A list of inverse transformation functions for model parameters.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -83,11 +156,11 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="Inference">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Inference</span></span><a class="headerlink" href="#Inference" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Inference</span></span><a class="headerlink" href="#Inference" title="Permalink to this definition"></a></dt>
 <dd><p>Inference class contains methods and utilities to perform parameter inference. The two algorithms added are the SGLD and ADSGLD.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="Inference.SGLD">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SGLD</span></span><a class="headerlink" href="#Inference.SGLD" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SGLD</span></span><a class="headerlink" href="#Inference.SGLD" title="Permalink to this definition"></a></dt>
 <dd><p>Stochastic Gradient Langevin Dynamics algorithm (SGLD). It is often outperformed by ADSGLD, so while SGLD is included for completeness, it’s recommended to use ADSGLD for most practical implementations.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -96,7 +169,7 @@ Welling, Max, and Yee W. Teh. 2011. “Bayesian Learning via Stochastic Gradient
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="Inference.SGLD.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_models</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Model</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradloglikfuns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Function</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BackendType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Inference.SGLD.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_models</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Model</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradloglikfuns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Function</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BackendType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Inference.SGLD.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Initializes the SGLD Class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -113,18 +186,18 @@ Welling, Max, and Yee W. Teh. 2011. “Bayesian Learning via Stochastic Gradient
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Inference.SGLD.sample">
-<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples_per_param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">burnin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iniPoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speedup_dummy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_groups_correlated_randomness</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_tqdm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">journal_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_to_save_journal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Journal</span></span></span><a class="headerlink" href="#Inference.SGLD.sample" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples_per_param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">burnin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iniPoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speedup_dummy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_groups_correlated_randomness</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_tqdm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">journal_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_to_save_journal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Journal</span></span></span><a class="headerlink" href="#Inference.SGLD.sample" title="Permalink to this definition"></a></dt>
 <dd><p>Simulates likely parameter values for the user-defined model given observed values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>observations</strong> – List of observations for which model parameters should be inferred.</p></li>
-<li><p><strong>n_samples</strong> – Number of posterior samples to generate post burn-in.</p></li>
+<li><p><strong>n_samples</strong> – Number of posterior parameter samples to generate post burn-in.</p></li>
 <li><p><strong>n_samples_per_param</strong> – Number of samples generated for each iteration of the algorithm.</p></li>
 <li><p><strong>burnin</strong> – The number of initial sampled parameters that should be discarded as their accuracy might be low.</p></li>
 <li><p><strong>step_size</strong> – Defines the size of the change for each step in the algorithm.</p></li>
 <li><p><strong>iniPoint</strong> – Initial point for the simulation.</p></li>
-<li><p><strong>w_val</strong> – Balances the trade-off between the scoring rule and the prior pdfs.</p></li>
+<li><p><strong>w_val</strong> – Balances the trade-off between the scoring rule and the prior pdfs. Higher values give more weight to the scoring rule</p></li>
 <li><p><strong>bounds</strong> – Bounds for the parameters.</p></li>
 <li><p><strong>speedup_dummy</strong> – If True, speedup measures are applied.</p></li>
 <li><p><strong>n_groups_correlated_randomness</strong> – Number of groups for correlated randomness.</p></li>
@@ -147,7 +220,7 @@ Welling, Max, and Yee W. Teh. 2011. “Bayesian Learning via Stochastic Gradient
 
 <dl class="py class">
 <dt class="sig sig-object py" id="Inference.ADSGLD">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ADSGLD</span></span><a class="headerlink" href="#Inference.ADSGLD" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ADSGLD</span></span><a class="headerlink" href="#Inference.ADSGLD" title="Permalink to this definition"></a></dt>
 <dd><p>Adjusted Stochastic Gradient Langevin Dynamics algorithm (ADSGLD). This outperforms the SGLD in most cases. It is advised to use the ADSGLD algorithm for most practical implementations, although in simpler cases, it may exhibit somewhat slower convergence compared to SGLD.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -156,7 +229,7 @@ Welling, Max, and Yee W. Teh. 2011. “Bayesian Learning via Stochastic Gradient
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="Inference.ADSGLD.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_models</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Model</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradloglikfuns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Function</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BackendType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Inference.ADSGLD.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_models</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Model</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradloglikfuns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Function</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">BackendType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Inference.ADSGLD.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Initializes the ADSGLD Class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -173,7 +246,7 @@ Welling, Max, and Yee W. Teh. 2011. “Bayesian Learning via Stochastic Gradient
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Inference.ADSGLD.sample">
-<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples_per_param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">burnin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iniPoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speedup_dummy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_groups_correlated_randomness</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_tqdm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">journal_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_to_save_journal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Journal</span></span></span><a class="headerlink" href="#Inference.ADSGLD.sample" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples_per_param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">burnin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffusion_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iniPoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speedup_dummy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_groups_correlated_randomness</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_tqdm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">journal_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_to_save_journal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Journal</span></span></span><a class="headerlink" href="#Inference.ADSGLD.sample" title="Permalink to this definition"></a></dt>
 <dd><p>Simulates likely parameter values for the user-defined model given observed values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -210,11 +283,11 @@ Welling, Max, and Yee W. Teh. 2011. “Bayesian Learning via Stochastic Gradient
 
 <dl class="py class">
 <dt class="sig sig-object py" id="Approx_Lhd">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Approx_Lhd</span></span><a class="headerlink" href="#Approx_Lhd" title="Permalink to this definition">¶</a></dt>
-<dd><p>In <cite>approx_lhd</cite>, we introduce scoring rules for parameter inference. We currently support energy and kernel score methods. Each method computes both the log_score and the gradient of the log score.</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Approx_Lhd</span></span><a class="headerlink" href="#Approx_Lhd" title="Permalink to this definition"></a></dt>
+<dd><p>In <cite>approx_lhd</cite>, we introduce scoring rules for parameter inference. We currently support energy and kernel score methods. Each method computes both the log score and the gradient of the log score.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="Approx_Lhd.EnergyScore">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">EnergyScore</span></span><a class="headerlink" href="#Approx_Lhd.EnergyScore" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">EnergyScore</span></span><a class="headerlink" href="#Approx_Lhd.EnergyScore" title="Permalink to this definition"></a></dt>
 <dd><p>Energy score is one of two scoring rules defined in the introduction. It computes the log of the energy score and its gradient for a given set of values.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -222,7 +295,7 @@ Welling, Max, and Yee W. Teh. 2011. “Bayesian Learning via Stochastic Gradient
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="Approx_Lhd.EnergyScore.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Statistics_calc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Beta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[Default]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Approx_Lhd.EnergyScore.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Statistics_calc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Beta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[Default]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Approx_Lhd.EnergyScore.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Initializes the EnergyScore class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -238,7 +311,7 @@ Welling, Max, and Yee W. Teh. 2011. “Bayesian Learning via Stochastic Gradient
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Approx_Lhd.EnergyScore.Loglikelihood">
-<span class="sig-name descname"><span class="pre">Loglikelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y_obs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y_Sim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#Approx_Lhd.EnergyScore.Loglikelihood" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">Loglikelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y_obs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y_Sim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#Approx_Lhd.EnergyScore.Loglikelihood" title="Permalink to this definition"></a></dt>
 <dd><p>Computes the log of the energy score for given values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -255,7 +328,7 @@ Welling, Max, and Yee W. Teh. 2011. “Bayesian Learning via Stochastic Gradient
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Approx_Lhd.EnergyScore.GradLoglikelihood">
-<span class="sig-name descname"><span class="pre">GradLoglikelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y_obs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y_Sim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#Approx_Lhd.EnergyScore.GradLoglikelihood" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">GradLoglikelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y_obs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y_Sim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#Approx_Lhd.EnergyScore.GradLoglikelihood" title="Permalink to this definition"></a></dt>
 <dd><p>Computes the gradient of the energy score with respect to each of the parameters of the user-defined model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -274,19 +347,19 @@ Welling, Max, and Yee W. Teh. 2011. “Bayesian Learning via Stochastic Gradient
 
 <dl class="py class">
 <dt class="sig sig-object py" id="Approx_Lhd.KernelScore">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">KernelScore</span></span><a class="headerlink" href="#Approx_Lhd.KernelScore" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">KernelScore</span></span><a class="headerlink" href="#Approx_Lhd.KernelScore" title="Permalink to this definition"></a></dt>
 <dd><p>Kernel score is the second of two scoring rules defined in the introduction. It computes the log of the kernel score and its gradient for a given set of values.</p>
 <p>Kernel score reference: [Gneiting, T. and Raftery, A. E. (2007). Strictly proper scoring rules, prediction, and estimation.]</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="Approx_Lhd.KernelScore.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Statistics_calc=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Model=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Kernel:</span> <span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Mean:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Approx_Lhd.KernelScore.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Statistics_calc=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Model=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Kernel:</span> <span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Mean:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Approx_Lhd.KernelScore.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Initializes the KernelScore class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>Statistics_calc</strong> – Not used. This parameter might be removed in future versions.</p></li>
 <li><p><strong>Model</strong> – User-defined model for which parameters are being calculated. This parameter is not used and might be removed in future versions.</p></li>
-<li><p><strong>Kernel</strong> – A PyTorch function that defines the kernel for computing the scoring function. For instance, the energy score can be obtained by supplying the beta_norm function from the energy score (with a negated returned value). Another example is the RBF function [cite].</p></li>
+<li><p><strong>Kernel</strong> – A PyTorch function that defines the kernel for computing the scoring function. For instance, the energy score can be obtained by supplying the beta_norm function from the energy score (with a negated returned value). Another example is the RBF function [<a class="reference external" href="https://en.wikipedia.org/wiki/Radial_basis_function_kernel">https://en.wikipedia.org/wiki/Radial_basis_function_kernel</a>].</p></li>
 <li><p><strong>Mean</strong> – If set to True, returns the mean of the kernel score over observed values. Default is False.</p></li>
 </ul>
 </dd>
@@ -295,7 +368,7 @@ Welling, Max, and Yee W. Teh. 2011. “Bayesian Learning via Stochastic Gradient
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Approx_Lhd.KernelScore.Loglikelihood">
-<span class="sig-name descname"><span class="pre">Loglikelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y_obs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y_Sim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#Approx_Lhd.KernelScore.Loglikelihood" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">Loglikelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y_obs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y_Sim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#Approx_Lhd.KernelScore.Loglikelihood" title="Permalink to this definition"></a></dt>
 <dd><p>Computes the log of the kernel score for given values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -312,7 +385,7 @@ Welling, Max, and Yee W. Teh. 2011. “Bayesian Learning via Stochastic Gradient
 
 <dl class="py method">
 <dt class="sig sig-object py" id="Approx_Lhd.KernelScore.GradLoglikelihood">
-<span class="sig-name descname"><span class="pre">GradLoglikelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y_obs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y_Sim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#Approx_Lhd.KernelScore.GradLoglikelihood" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">GradLoglikelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Y_obs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y_Sim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#Approx_Lhd.KernelScore.GradLoglikelihood" title="Permalink to this definition"></a></dt>
 <dd><p>Computes the gradient of the kernel score with respect to each of the parameters of the user-defined model using the autograd capability in PyTorch.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -333,44 +406,42 @@ Welling, Max, and Yee W. Teh. 2011. “Bayesian Learning via Stochastic Gradient
 
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtools">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">graphtools</span></span><a class="headerlink" href="#graphtools" title="Permalink to this definition">¶</a></dt>
-<dd><p>A litany of helper functions are defined in Graph Tools, bridging the gap between continuous priors, likelihood functions (scoring rules), user-defined models, and inference algorithms. Though these functions are primarily for internal use, ensuring the seamless operation of the package, they are documented here for transparency, further development, and understanding of the package’s internals.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="GradSimulate">
-<span class="sig-name descname"><span class="pre">GradSimulate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N_samples_per_param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#GradSimulate" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">graphtools</span></span><a class="headerlink" href="#graphtools" title="Permalink to this definition"></a></dt>
+<dd><p>A litany of helper functions are defined in Graph Tools, bridging the gap between continuous priors, likelihood functions (scoring rules), user-defined models, and inference algorithms. Though these functions are primarily for internal use, ensuring the operation of the package, they are documented here for transparency, further development, and understanding of the package’s internals.</p>
+<blockquote>
+<div><dl class="py method">
+<dt class="sig sig-object py" id="graphtools.GradSimulate">
+<span class="sig-name descname"><span class="pre">GradSimulate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N_samples_per_param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtools.GradSimulate" title="Permalink to this definition"></a></dt>
 <dd><p>Simulates gradients.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>N_samples_per_param</strong> – Number of values and corresponding gradients to simulate.</p></li>
-<li><p><strong>Rng</strong> – Defaults to <code class="docutils literal notranslate"><span class="pre">np.random.RandomState()</span></code>. However, this might be deprecated in future versions.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>[Needs Description]</p>
-</dd>
-</dl>
+<li><p><strong>Rng</strong> – <p>Defaults to <code class="docutils literal notranslate"><span class="pre">np.random.RandomState()</span></code>. However, this might be deprecated in future versions.
+:return: Returns a list of simulations and their corresponding gradients</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This function distinguishes itself by calling the <code class="docutils literal notranslate"><span class="pre">grad_forward_simulate</span></code> method instead of the usual <code class="docutils literal notranslate"><span class="pre">forward_simulate</span></code>. Additionally, it applies the <code class="docutils literal notranslate"><span class="pre">transform_variables</span></code> function from the user-defined model, ensuring correct parameter value translation.</p>
 </div>
+</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="grad_log_pdf_of_prior">
-<span class="sig-name descname"><span class="pre">grad_log_pdf_of_prior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Models</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">np.array</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">np.array</span></span></span><a class="headerlink" href="#grad_log_pdf_of_prior" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtools.grad_log_pdf_of_prior">
+<span class="sig-name descname"><span class="pre">grad_log_pdf_of_prior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Models</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">np.array</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">np.array</span></span></span><a class="headerlink" href="#graphtools.grad_log_pdf_of_prior" title="Permalink to this definition"></a></dt>
 <dd><p>Computes the gradient of the logarithm of the PDFs for the priors.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>Models</strong> – List containing the variable for the user-defined model.</p></li>
-<li><p><strong>Parameters</strong> – List of numpy arrays representing the parameter values.</p></li>
+<li><p><strong>Parameters</strong> – List of numpy arrays representing the parameter values for which the pdf is being evaluated.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Array of floats representing the gradients of the log of the PDFs based on the input.</p>
+<dd class="field-even"><p>Array of floats representing the gradients of the log of the PDFs based on the input for each parameter.</p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -379,15 +450,15 @@ Welling, Max, and Yee W. Teh. 2011. “Bayesian Learning via Stochastic Gradient
 </div>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="apply_local_transform">
-<span class="sig-name descname"><span class="pre">apply_local_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_prior</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="p"><span class="pre">[</span></span><span class="pre">ReturnType</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#apply_local_transform" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtools.apply_local_transform">
+<span class="sig-name descname"><span class="pre">apply_local_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_prior</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="p"><span class="pre">[</span></span><span class="pre">ReturnType</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtools.apply_local_transform" title="Permalink to this definition"></a></dt>
 <dd><p>Transforms parent parameters into the correct space.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model_prior</strong> – [Needs Description]</p></li>
-<li><p><strong>values</strong> – [Needs Description]</p></li>
+<li><p><strong>model_prior</strong> – the variable for the model element for which you are applying the local transformations</p></li>
+<li><p><strong>values</strong> – The parameters to be transformed</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -400,9 +471,9 @@ Welling, Max, and Yee W. Teh. 2011. “Bayesian Learning via Stochastic Gradient
 </div>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="full_transform">
-<span class="sig-name descname"><span class="pre">full_transform</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#full_transform" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtools.full_transform">
+<span class="sig-name descname"><span class="pre">full_transform</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#graphtools.full_transform" title="Permalink to this definition"></a></dt>
 <dd><p>Collates all transformations from hierarchical prior models.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -411,9 +482,9 @@ Welling, Max, and Yee W. Teh. 2011. “Bayesian Learning via Stochastic Gradient
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="apply_full_transform">
-<span class="sig-name descname"><span class="pre">apply_full_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#apply_full_transform" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtools.apply_full_transform">
+<span class="sig-name descname"><span class="pre">apply_full_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#graphtools.apply_full_transform" title="Permalink to this definition"></a></dt>
 <dd><p>Applies all transformations to a given set of values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -425,9 +496,9 @@ Welling, Max, and Yee W. Teh. 2011. “Bayesian Learning via Stochastic Gradient
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="full_inverse_transform">
-<span class="sig-name descname"><span class="pre">full_inverse_transform</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#full_inverse_transform" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtools.full_inverse_transform">
+<span class="sig-name descname"><span class="pre">full_inverse_transform</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#graphtools.full_inverse_transform" title="Permalink to this definition"></a></dt>
 <dd><p>Compiles all inverse transformations from hierarchical prior models.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -436,139 +507,53 @@ Welling, Max, and Yee W. Teh. 2011. “Bayesian Learning via Stochastic Gradient
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="apply_full_inverse_transform">
-<span class="sig-name descname"><span class="pre">apply_full_inverse_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#apply_full_inverse_transform" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtools.apply_full_inverse_transform">
+<span class="sig-name descname"><span class="pre">apply_full_inverse_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="headerlink" href="#graphtools.apply_full_inverse_transform" title="Permalink to this definition"></a></dt>
 <dd><p>Applies all inverse transformations to a given set of values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>values</strong> – Array of values.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Transformed values array.</p>
+<dd class="field-odd"><p><strong>values</strong> – Array of values.
+:return: Transformed values array.</p>
 </dd>
 </dl>
+</dd></dl>
+
+</div></blockquote>
 </dd></dl>
 
 </section>
 </section>
 
 
+           </div>
           </div>
-          
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Defining%20A%20Model.html" class="btn btn-neutral float-left" title="Defining A Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Timothy Moffitt.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">ABCPY - Scoring Rules</a></h1>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
 
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Defining%20A%20Model.html">Defining A Model</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Added functions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#a-description-of-the-added-functions-and-their-use">A description of the added functions and their use.</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#ContinuousModel"><code class="docutils literal notranslate"><span class="pre">ContinuousModel</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#ContinuousModel.gradlogpdf"><code class="docutils literal notranslate"><span class="pre">ContinuousModel.gradlogpdf()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ContinuousModel.transform_list"><code class="docutils literal notranslate"><span class="pre">ContinuousModel.transform_list()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ContinuousModel.inverse_transform_list"><code class="docutils literal notranslate"><span class="pre">ContinuousModel.inverse_transform_list()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#Inference"><code class="docutils literal notranslate"><span class="pre">Inference</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#Inference.SGLD"><code class="docutils literal notranslate"><span class="pre">Inference.SGLD</span></code></a><ul>
-<li class="toctree-l5"><a class="reference internal" href="#Inference.SGLD.__init__"><code class="docutils literal notranslate"><span class="pre">Inference.SGLD.__init__()</span></code></a></li>
-<li class="toctree-l5"><a class="reference internal" href="#Inference.SGLD.sample"><code class="docutils literal notranslate"><span class="pre">Inference.SGLD.sample()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l4"><a class="reference internal" href="#Inference.ADSGLD"><code class="docutils literal notranslate"><span class="pre">Inference.ADSGLD</span></code></a><ul>
-<li class="toctree-l5"><a class="reference internal" href="#Inference.ADSGLD.__init__"><code class="docutils literal notranslate"><span class="pre">Inference.ADSGLD.__init__()</span></code></a></li>
-<li class="toctree-l5"><a class="reference internal" href="#Inference.ADSGLD.sample"><code class="docutils literal notranslate"><span class="pre">Inference.ADSGLD.sample()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#Approx_Lhd"><code class="docutils literal notranslate"><span class="pre">Approx_Lhd</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#Approx_Lhd.EnergyScore"><code class="docutils literal notranslate"><span class="pre">Approx_Lhd.EnergyScore</span></code></a><ul>
-<li class="toctree-l5"><a class="reference internal" href="#Approx_Lhd.EnergyScore.__init__"><code class="docutils literal notranslate"><span class="pre">Approx_Lhd.EnergyScore.__init__()</span></code></a></li>
-<li class="toctree-l5"><a class="reference internal" href="#Approx_Lhd.EnergyScore.Loglikelihood"><code class="docutils literal notranslate"><span class="pre">Approx_Lhd.EnergyScore.Loglikelihood()</span></code></a></li>
-<li class="toctree-l5"><a class="reference internal" href="#Approx_Lhd.EnergyScore.GradLoglikelihood"><code class="docutils literal notranslate"><span class="pre">Approx_Lhd.EnergyScore.GradLoglikelihood()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l4"><a class="reference internal" href="#Approx_Lhd.KernelScore"><code class="docutils literal notranslate"><span class="pre">Approx_Lhd.KernelScore</span></code></a><ul>
-<li class="toctree-l5"><a class="reference internal" href="#Approx_Lhd.KernelScore.__init__"><code class="docutils literal notranslate"><span class="pre">Approx_Lhd.KernelScore.__init__()</span></code></a></li>
-<li class="toctree-l5"><a class="reference internal" href="#Approx_Lhd.KernelScore.Loglikelihood"><code class="docutils literal notranslate"><span class="pre">Approx_Lhd.KernelScore.Loglikelihood()</span></code></a></li>
-<li class="toctree-l5"><a class="reference internal" href="#Approx_Lhd.KernelScore.GradLoglikelihood"><code class="docutils literal notranslate"><span class="pre">Approx_Lhd.KernelScore.GradLoglikelihood()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#graphtools"><code class="docutils literal notranslate"><span class="pre">graphtools</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#GradSimulate"><code class="docutils literal notranslate"><span class="pre">GradSimulate()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#grad_log_pdf_of_prior"><code class="docutils literal notranslate"><span class="pre">grad_log_pdf_of_prior()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#apply_local_transform"><code class="docutils literal notranslate"><span class="pre">apply_local_transform()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#full_transform"><code class="docutils literal notranslate"><span class="pre">full_transform()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#apply_full_transform"><code class="docutils literal notranslate"><span class="pre">apply_full_transform()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#full_inverse_transform"><code class="docutils literal notranslate"><span class="pre">full_inverse_transform()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#apply_full_inverse_transform"><code class="docutils literal notranslate"><span class="pre">apply_full_inverse_transform()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="Defining%20A%20Model.html" title="previous chapter">Defining A Model</a></li>
-      <li>Next: <a href="examples.html" title="next chapter">Examples</a></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2023, Timothy Moffitt.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.2.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
-      
-      |
-      <a href="_sources/features.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>

@@ -7,17 +7,18 @@ Welcome to ABCPY - Scoring Rules's documentation!
 =================================================
 
 **ABCpy Scoring Rules** is a Python library branched from the existing 
-project ABCPY linked here: https://github.com/eth-cscs/abcpy This extension adds the Energy and Kernel Score and
-descent algorithms which allow for gblfi on the parameters of a user defined model
-given observations. 
+project ABCPY linked here: https://github.com/eth-cscs/abcpy. This extension adds the Energy and Kernel Score and
+simulator algorithms which allow for gblfi on the parameters of a user defined model, given a set of observations. 
 
 Installation instructions are available here :doc:`usage`
 
-A description of the added functions are available here:
+A description of the added functions are available here: :doc:`features`
 
-Examples are available here.
+Examples are available here. :doc:`examples`
 
-It is highly recomended to refer to the exisiting abcpy documentation to ease understanding and 
+And finally instructions for defining a simulator model are here : :doc:`Defining A Model` 
+
+It is highly recommended to refer to the existing abcpy documentation to ease understanding and 
 for a full explanation of the features available. It is linked here : https://abcpy.readthedocs.io/en/v0.6.3/
 
 
