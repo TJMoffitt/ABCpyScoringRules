@@ -132,6 +132,9 @@ class Uniform(ProbabilisticModel, Continuous):
     
     def transform_list(self):
         return [False, False]
+    
+    def jacobian_list(self):
+        return [False, False]
 
 class Normal(ProbabilisticModel, Continuous):
     def __init__(self, parameters, name='Normal'):
@@ -373,8 +376,8 @@ class StudentT(ProbabilisticModel, Continuous):
     def transform_list(self):
         return [False, torch.exp]
 
-
-    
+    def jacobian_list(self):
+        return [False, torch.exp]    
         
 
 
@@ -514,6 +517,9 @@ class MultivariateNormal(ProbabilisticModel, Continuous):
         return [False] * self._dimension
     
     def transform_list(self):               # For our algorithms it is only possible to use multinormal with fixed covariance.
+        return [False] * self._dimension
+    
+    def jacobian_list(self):
         return [False] * self._dimension
 
 class MultiStudentT(ProbabilisticModel, Continuous):
@@ -684,6 +690,8 @@ class MultiStudentT(ProbabilisticModel, Continuous):
     def transform_list(self):               # For our algorithms it is only possible to use multinormal with fixed covariance.
         return [False] * self._dimension   
 
+    def jacobian_list(self):
+        return [False] * self._dimension 
 
 class LogNormal(ProbabilisticModel, Continuous):
     def __init__(self, parameters, name='LogNormal'):
@@ -901,4 +909,7 @@ class Exponential(ProbabilisticModel, Continuous):
         return [torch.log]
     
     def transform_list(self):
+        return [torch.exp]
+
+    def jacobian_list(self):
         return [torch.exp]

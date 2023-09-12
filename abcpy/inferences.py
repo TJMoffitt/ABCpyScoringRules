@@ -5315,8 +5315,8 @@ class SGLD(BaseLikelihood, InferenceMethod):
 
 
 
-    def sample(self, observations, n_samples, n_samples_per_param=100, burnin=1000, 
-               diffusion_factor=0.01, step_size=0.001, iniPoint=None, w_val = 3,
+    def sample(self, observations, n_samples, n_samples_per_param=100, burnin=1000,
+               step_size=0.001, iniPoint=None, w_val = 3,
                bounds=None, speedup_dummy=True, n_groups_correlated_randomness=None, use_tqdm=True,
                journal_file=None, path_to_save_journal=None):
         """Samples from the posterior distribution of the model parameter given the observed
@@ -5459,11 +5459,11 @@ class SGLD(BaseLikelihood, InferenceMethod):
         # main sgld algorithm
         self.observations = observations
         self.n = len(self.observations)
-        self.diffusion_factor = diffusion_factor
+        #self.diffusion_factor = diffusion_factor
         self.theta_dim = len(accepted_parameter)
         self.logger.info("Starting adSGLD")
         self.step_size = step_size
-        self.xi = self.diffusion_factor
+        #self.xi = self.diffusion_factor
         self.w = w_val
         self.p_var = np.random.randn(self.theta_dim)
         # current theta is accepted_parameter
@@ -5816,8 +5816,8 @@ class adSGLD(BaseLikelihood, InferenceMethod):
             #print("True Value: " + true_value)
             #print("True Sigma: " + true_mu)
             #print(self.n)
-            self.logger.debug("Step {} of SGLD algorithm".format(aStep))
-            print("Step {} of SGLD algorithm".format(aStep))
+            self.logger.debug("Step {} of adSGLD algorithm".format(aStep))
+            print("Step {} of adSGLD algorithm".format(aStep))
             self.set_parameters(accepted_parameter)
             print(self.transform())
 
@@ -5843,7 +5843,7 @@ class adSGLD(BaseLikelihood, InferenceMethod):
                 crosprod = sum([i**2 for i in self.p_var])
 
                 self.xi = self.xi + (((1/self.n)*crosprod)-1)*self.step_size # self.n
-                print(str(self.xi) + " < self.xi updated")
+                #print(str(self.xi) + " < self.xi updated")
                 # if aStep >= burnin:
                 #     accepted_parameters.append(accepted_parameter)
                 # else:

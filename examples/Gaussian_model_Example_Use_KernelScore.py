@@ -35,7 +35,7 @@ y_obs = model.forward_simulate([6,1], 20, rng=np.random.RandomState(8))  # Corre
 
 sampler = SGLD([model], [dist_calc], dummy, seed=1)
 
-journal = sampler.sample([y_obs], 100, 40, 100, step_size=0.0001, w_val = 30, diffusion_factor=0.01, path_to_save_journal="tmp.jnl")
+journal = sampler.sample([y_obs], 100, 40, 100, step_size=0.0001, w_val = 30, path_to_save_journal="tmp.jnl")
 
 journal.plot_posterior_distr(path_to_save="posterior.png")
 journal.traceplot()
