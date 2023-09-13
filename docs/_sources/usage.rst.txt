@@ -11,7 +11,7 @@ to ensure correct functioning.
 
 To install and use the package, first download the zipped package from this link, and decompress the file in a folder of your choice.
 
-Navigate to the decompressed folder and run the following commands (with administrator  priviledges) numpy is installed first
+Navigate to the decompressed folder and run the following commands (with administrator  priviledges). numpy is installed first
 here to avoid dependency clashes:
 
 .. code-block:: console

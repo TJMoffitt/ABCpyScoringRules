@@ -523,6 +523,117 @@ lorenz 95 model) or which have other correlated variables.</p>
 </div>
 <p>producing the following output plot:</p>
 <a class="reference internal image-reference" href="_images/DualGaussian.png"><img alt="Alternative text" src="_images/DualGaussian.png" style="width: 400px;" /></a>
+<p>Time Series simulation</p>
+<p>We develop the following toy time series simulator which simulates a time series starting
+at zero and adding a parameter rate and a standard normal(0,1) error term at
+each iteration over t steps.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">abcpy.probabilisticmodels</span> <span class="kn">import</span> <span class="n">ProbabilisticModel</span><span class="p">,</span> <span class="n">Continuous</span><span class="p">,</span> <span class="n">InputConnector</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="k">class</span> <span class="nc">IncreasingTimeSeries</span><span class="p">(</span><span class="n">ProbabilisticModel</span><span class="p">,</span> <span class="n">Continuous</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">timesteps</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;IncreasingTimeSeries&#39;</span><span class="p">):</span>
+        <span class="c1"># We expect input of type parameters = [rate]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Input of IncreasingTimeSeries model is of type list&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Input list must be of length 1, containing [rate].&#39;</span><span class="p">)</span>
+
+        <span class="n">input_connector</span> <span class="o">=</span> <span class="n">InputConnector</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">input_connector</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ordered_transforms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ordered_inverse_transforms</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span> <span class="o">=</span> <span class="n">timesteps</span>  <span class="c1"># Setting the length of the time series</span>
+
+    <span class="k">def</span> <span class="nf">_check_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_values</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_values</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Number of parameters of IncreasingTimeSeries model must be 1.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">forward_simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_values</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">()):</span>
+        <span class="n">rate</span> <span class="o">=</span> <span class="n">input_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulate_time_series</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">rate</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span>
+
+    <span class="k">def</span> <span class="nf">grad_forward_simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_values</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">()):</span>
+        <span class="n">rate</span> <span class="o">=</span> <span class="n">input_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grad_simulate_time_series</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">rate</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span>
+
+    <span class="k">def</span> <span class="nf">simulate_time_series</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">rate</span><span class="p">):</span>
+
+        <span class="n">fullvalues</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">current_value</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span><span class="p">):</span>
+                <span class="n">noise</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">current_value</span> <span class="o">+=</span> <span class="n">rate</span> <span class="o">+</span> <span class="n">noise</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_value</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+            <span class="n">fullvalues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fullvalues</span>
+
+    <span class="k">def</span> <span class="nf">grad_simulate_time_series</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">rate</span><span class="p">):</span>
+
+        <span class="n">fullvalues</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">fullgrad</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">rate_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">rate</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">current_value</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">gradvalues</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span><span class="p">):</span>
+                <span class="n">noise</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">new_value</span> <span class="o">=</span> <span class="n">current_value</span> <span class="o">+</span> <span class="n">rate_tensor</span> <span class="o">+</span> <span class="n">noise</span>
+                <span class="n">new_value</span><span class="o">.</span><span class="n">backward</span><span class="p">(</span><span class="n">retain_graph</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_value</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+                <span class="n">gradvalues</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">rate_tensor</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">item</span><span class="p">()])</span>
+
+                <span class="c1"># Update current_value without modifying it in-place</span>
+                <span class="n">current_value</span> <span class="o">=</span> <span class="n">new_value</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+                <span class="c1"># Zero out the gradients to ensure the accumulation does not happen</span>
+                <span class="n">rate_tensor</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+            <span class="n">fullvalues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+            <span class="n">fullgrad</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gradvalues</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">fullvalues</span> <span class="o">+</span> <span class="n">fullgrad</span>
+
+
+    <span class="k">def</span> <span class="nf">_check_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="c1"># Check that the output is a list (or iterable)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">get_output_dimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span>
+
+    <span class="k">def</span> <span class="nf">jacobian_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ordered_transforms</span>
+
+    <span class="k">def</span> <span class="nf">transform_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ordered_transforms</span>
+
+    <span class="k">def</span> <span class="nf">inverse_transform_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ordered_inverse_transforms</span>
+</pre></div>
+</div>
+<p>We generate a set of 30 observations with rate parameter 6.0 each of length t=4 and run an sgld sampler on this time series with
+the following parameters n samples = 300, n samples per param = 100, burn in
+= 300, step size=0.0001, w val = 50. We run this sampler with a normal(9,3)
+prior parameter on rate and get the following output</p>
+<a class="reference internal image-reference" href="_images/TimeSeries6Simulation.png"><img alt="Alternative text" src="_images/TimeSeries6Simulation.png" style="width: 400px;" /></a>
+<p>Showing that our approach is indeed able to correctly infer the parameters for a generative time-series model.
+(note the variance in observations, increasing n_obs to 100 gives even closer
+estimations to the true parameter 6.0)</p>
 </section>
 
 
