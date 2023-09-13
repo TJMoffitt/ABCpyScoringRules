@@ -4886,8 +4886,8 @@ class SGLD(BaseLikelihood, InferenceMethod):
         # current N is burnin + n_samples
 
 
-        true_value = str(np.sum(observations)/len(observations[0]))
-        true_mu = str(np.std(observations))
+        #true_value = str(np.sum(observations)/len(observations[0]))
+        #true_mu = str(np.std(observations))
 
         for aStep in tqdm(range(burnin + n_samples), disable=not use_tqdm): 
 
@@ -4927,14 +4927,14 @@ class SGLD(BaseLikelihood, InferenceMethod):
             
 
 
-        mutotal = 0
-        sigmatotal = 0
-        for element in accepted_parameters:
-            mutotal += element[0].item()
-            sigmatotal += element[1].item()
-        print(str(np.sum(mutotal)/len(accepted_parameters)) + " Average Mu Value")
-        print(str(np.sum(sigmatotal)/len(accepted_parameters)) + " Average Sigma Value")
-        self.logger.info("Saving results to output journal")
+        #mutotal = 0
+        #sigmatotal = 0
+        #for element in accepted_parameters:
+        #    mutotal += element[0].item()
+        #    sigmatotal += element[1].item()
+        #print(str(np.sum(mutotal)/len(accepted_parameters)) + " Average Mu Value")
+        #print(str(np.sum(sigmatotal)/len(accepted_parameters)) + " Average Sigma Value")
+        #self.logger.info("Saving results to output journal")
         self.acceptance_rate = 1.0 
         self.logger.info("Saving results to output journal")
         self.accepted_parameters_manager.update_broadcast(self.dummy_backend, accepted_parameters=accepted_parameters)

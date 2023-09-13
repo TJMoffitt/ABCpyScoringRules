@@ -25,7 +25,7 @@ y_obs = model.forward_simulate([6,1,0,1], 100, rng=np.random.RandomState(8))  # 
 print(y_obs)
 print(np.mean(y_obs))
 print(np.std(y_obs))
-input()
+
 sampler = adSGLD([model], [dist_calc], dummy, seed=1)
 
 journal = sampler.sample([y_obs], 1500, 100, 1500, step_size=0.0001, w_val = 120, path_to_save_journal="tmp.jnl")

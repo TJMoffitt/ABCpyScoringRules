@@ -162,7 +162,7 @@ import torch
 #         self.assertAlmostEqual(comp_loglikelihood_two, comp_loglikelihood_a + comp_loglikelihood_b)
 
 
-class EnergyScoreTests(unittest.TestCase):
+class EnergyScoreTests(unittest.TestCase):      #ABCpyScoringRules_Test
     def setUp(self):
         self.mu = Uniform([[-5.0], [5.0]], name='mu')
         self.sigma = Uniform([[5.0], [10.0]], name='sigma')
@@ -177,55 +177,22 @@ class EnergyScoreTests(unittest.TestCase):
         self.y_obs = [5.5, 6, 6.5]
         self.y_sim = [np.array([6.01687574]), np.array([5.54506969]), np.array([5.08890629])]
         self.grad_y_sim = [5.026196002960205, 6.511902332305908, 4.873022556304932, [1.0, -0.9738039970397949], [1.0, 0.5119023323059082], [1.0, -1.1269773244857788]]  
-        # self.y_sim = self.model.forward_simulate(self.model.get_input_values(), 100, rng=np.random.RandomState(1))
-        # print(self.y_sim)
-
-    # def test_likelihood(self):
-    #     # Checks whether wrong input type produces error message
-    #     self.assertRaises(TypeError, self.likfun.loglikelihood, 3.4, [2, 1])
-    #     self.assertRaises(TypeError, self.likfun.loglikelihood, [2, 4], 3.4)
-
-    #     # create observed data
-    #     y_obs = self.model.forward_simulate([7, 1], 50, rng=np.random.RandomState(1)) #[1.8]
-
-    #     # check whether it raises correct error with input of wrong size
-    #     #self.assertRaises(RuntimeError, self.likfun_1.loglikelihood, y_obs, self.y_sim)
-
-    #     # calculate the statistics of the observed data
-    #     for i in range(0,80):
-    #         self.y_sim = self.model.forward_simulate([5 + 0.05*i, 1], 50, rng=np.random.RandomState(1))
-    #         self.y_sim_grad = self.model.grad_forward_simulate([5 + 0.05*i, 1], 50, rng=np.random.RandomState(1))
-    #         # print(self.y_sim)
-    #         comp_loglikelihood = self.likfun.loglikelihood(y_obs, self.y_sim)
-    #         grad_comp_loglikelihood = self.likfun.gradloglikelihood(y_obs, self.y_sim_grad)
-    #         print(str(comp_loglikelihood) + str(" <---- loglik ") + str(5 + 0.05*i))
-    #         print(str(grad_comp_loglikelihood) + str(" <---- gradloglik ") + str(5 + 0.05*i))
-    #     expected_loglikelihood = -2.3069321875272815
-    #     # This checks whether it computes a correct value and dimension is right
-    #     self.assertAlmostEqual(comp_loglikelihood, expected_loglikelihood)
+ 
 
     def test_likelihood(self):
         # Checks whether wrong input type produces error message
         self.assertRaises(TypeError, self.likfun.loglikelihood, 3.4, [2, 1])
         self.assertRaises(TypeError, self.likfun.loglikelihood, [2, 4], 3.4)
 
-        # create observed data
-
-        # create simulated data
-
-
-
         # calculate the statistics of the observed data
         comp_loglikelihood = self.likfun.loglikelihood(self.y_obs, self.y_sim)
-        expected_loglikelihood = 1.6529999557886415                                            # Change this value
-        # This checks whether it computes a correct value and dimension is right
+        expected_loglikelihood = 1.6529999557886415                                       
         self.assertAlmostEqual(comp_loglikelihood, expected_loglikelihood)
 
     def test_likelihood_multiple_observations(self):
         y_obs = [1.8, 0.9]
         comp_loglikelihood = self.likfun.loglikelihood(y_obs, self.y_sim)
         expected_loglikelihood = 33.66972857354289
-        # This checks whether it computes a correct value and dimension is right
         self.assertAlmostEqual(comp_loglikelihood, expected_loglikelihood)
 
     def test_loglikelihood_additive(self):
@@ -233,37 +200,27 @@ class EnergyScoreTests(unittest.TestCase):
         comp_loglikelihood_a = self.likfun.loglikelihood([y_obs[0]], self.y_sim)
         comp_loglikelihood_b = self.likfun.loglikelihood([y_obs[1]], self.y_sim)
         comp_loglikelihood_two = self.likfun.loglikelihood(y_obs, self.y_sim)
-
         self.assertAlmostEqual(comp_loglikelihood_two, comp_loglikelihood_a + comp_loglikelihood_b)
 
     def test_grad_likelihood(self):
-        # Checks whether wrong input type produces error message
+
         self.assertRaises(TypeError, self.likfun.gradloglikelihood, 3.4, [2, 1])
         self.assertRaises(TypeError, self.likfun.gradloglikelihood, [2, 4], 3.4)
 
         # create observed data
         y_obs = [1.8]
 
-        # check whether it raises correct error with input of wrong size
-        #self.assertRaises(RuntimeError, self.likfun_1.gradloglikelihood, y_obs, self.y_sim)
-
         # calculate the statistics of the observed data
         comp_loglikelihood = self.likfun.gradloglikelihood(y_obs, self.grad_y_sim).tolist()
         expected_loglikelihood = [[5.719857001501369, -4.597993652923241]]                                        # Change this value
-        # This checks whether it computes a correct value and dimension is right
-        print(comp_loglikelihood)
-        print(expected_loglikelihood)
-        assert comp_loglikelihood == expected_loglikelihood# assert_array_equal(comp_loglikelihood, expected_loglikelihood)
-        #self.assertAlmostEqual(comp_loglikelihood, expected_loglikelihood)
+
+        assert comp_loglikelihood == expected_loglikelihood
 
     def test_grad_likelihood_multiple_observations(self):
         y_obs = [1.8, 0.9]
         comp_loglikelihood = self.likfun.gradloglikelihood(y_obs, self.grad_y_sim).tolist()
         expected_loglikelihood = [[12.113350650953997, -9.594228954909312]]
-        print(comp_loglikelihood)
-        print(expected_loglikelihood)
-        # This checks whether it computes a correct value and dimension is right
-        #self.assertAlmostEqual(comp_loglikelihood, expected_loglikelihood)
+
         assert comp_loglikelihood == expected_loglikelihood
 
     def test_grad_loglikelihood_additive(self):
@@ -275,9 +232,8 @@ class EnergyScoreTests(unittest.TestCase):
         pair_sum = np.add(comp_loglikelihood_a, comp_loglikelihood_b).tolist()
 
         assert comp_loglikelihood_two.tolist() == pair_sum
-        #self.assertAlmostEqual(, comp_loglikelihood_a() + comp_loglikelihood_b())
 
-class KernelScoreTests(unittest.TestCase):
+class KernelScoreTests(unittest.TestCase):      #ABCpyScoringRules_Test
     def setUp(self):
         self.mu = Uniform([[-5.0], [5.0]], name='mu')
         self.sigma = Uniform([[5.0], [10.0]], name='sigma')
@@ -303,12 +259,9 @@ class KernelScoreTests(unittest.TestCase):
         # create observed data
         y_obs = [1.8]
 
-        # check whether it raises correct error with input of wrong size
-        # self.assertRaises(RuntimeError, self.likfun_1.loglikelihood, y_obs, self.y_sim)
-
         # calculate the statistics of the observed data
         comp_loglikelihood = self.likfun.loglikelihood(y_obs, self.y_sim)
-        expected_loglikelihood = 14.072262694582813                                           # Change this value
+        expected_loglikelihood = 14.072262694582813                                       
         # This checks whether it computes a correct value and dimension is right
         self.assertAlmostEqual(comp_loglikelihood, expected_loglikelihood)
 
@@ -335,24 +288,16 @@ class KernelScoreTests(unittest.TestCase):
         # create observed data
         y_obs = [1.8]
 
-        # check whether it raises correct error with input of wrong size
-        #self.assertRaises(RuntimeError, self.likfun_1.gradloglikelihood, y_obs, self.y_sim)
-
         # calculate the statistics of the observed data
         comp_loglikelihood = self.likfun.gradloglikelihood(y_obs, self.grad_y_sim).tolist()
         expected_loglikelihood = [[5.719857001501369, -4.597993652923241]]                                        # Change this value
-        # This checks whether it computes a correct value and dimension is right
-        print(comp_loglikelihood)
-        print(expected_loglikelihood)
-        assert comp_loglikelihood == expected_loglikelihood# assert_array_equal(comp_loglikelihood, expected_loglikelihood)
-        #self.assertAlmostEqual(comp_loglikelihood, expected_loglikelihood)
+
+        assert comp_loglikelihood == expected_loglikelihood
 
     def test_grad_likelihood_multiple_observations(self):
         y_obs = [1.8, 0.9]
         comp_loglikelihood = self.likfun.gradloglikelihood(y_obs, self.grad_y_sim).tolist()
         expected_loglikelihood = [[12.113350650953997, -9.594228954909312]]
-        print(comp_loglikelihood)
-        print(expected_loglikelihood)
         # This checks whether it computes a correct value and dimension is right
         assert comp_loglikelihood == expected_loglikelihood
 
@@ -376,24 +321,5 @@ class KernelScoreTests(unittest.TestCase):
         norm_beta = torch.sum(torch.abs(diff).pow(2), dim=-1).pow(self.beta/2)
         return -1* norm_beta
 
-
-
-
-
-
-
-
 if __name__ == '__main__':
    unittest.main()
-
-
-# if __name__ == '__main__':
-#      # unittest.main()
-#     tests = KernelScoreTests()
-#      #for test in dir(tests):
-#         #test()
-#     tests.setUp()
-#     tests.test_likelihood()
-#     tests.test_grad_likelihood()
-#     tests.test_grad_likelihood_multiple_observations()
-#     tests.test_grad_loglikelihood_additive()
